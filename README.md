@@ -1,65 +1,112 @@
-# ShopNest - Modern E-Commerce Platform
+# 🛍️ ShopNest - Premium E-Commerce Experience
 
-ShopNest is a full-stack, modern, and minimal e-commerce platform built with React, Node.js, Express, and MongoDB. It features a clean UI, smooth animations, and a comprehensive set of features for both users and administrators.
+[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Framer Motion](https://img.shields.io/badge/Framer_Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white)](https://www.framer.com/motion/)
 
-## 🚀 Features
+ShopNest is a state-of-the-art, full-stack e-commerce platform designed with a **Luxury Minimalist** aesthetic. It provides a seamless shopping experience featuring dynamic product filtering, persistent state management, and a high-performance backend.
 
-### User Features
-- **Modern UI**: Clean, minimal white-theme design with smooth transitions.
-- **Authentication**: Secure JWT-based login and registration.
-- **Product Discovery**: Browse by categories, search with autocomplete, and filter by price/sort.
-- **Shopping Experience**: Add to cart, wishlist, and recently viewed tracking.
-- **Checkout**: Integrated coupon system and secure checkout flow.
-- **Responsive**: Fully optimized for Mobile, Tablet, and Desktop.
+---
 
-### Admin Features
-- **Dashboard**: Overview of sales analytics and store performance.
-- **Inventory Management**: Add, edit, and delete products and categories.
-- **Order Management**: Track and update order statuses.
-- **User & Coupon Management**: Manage store users and active discount codes.
+## ✨ Key Features
 
-## 🛠️ Tech Stack
+### 💎 Premium User Interface
+- **Luxury Hero Section**: Immersive high-fashion visuals with layered parallax animations.
+- **Responsive Design**: Flawless experience across Mobile, Tablet, and Desktop.
+- **Glassmorphism UI**: Modern blurred-glass effects for a sophisticated "Elite" feel.
 
-- **Frontend**: React.js, Tailwind CSS, Framer Motion, Zustand (State Management), Lucide React.
-- **Backend**: Node.js, Express.js.
-- **Database**: MongoDB Atlas.
-- **Authentication**: JWT & Bcrypt.js.
-- **Storage**: Cloudinary (Image Uploads).
+### 🛒 Advanced Shopping Experience
+- **Dynamic Filtering**: Instant filtering by category (Men, Women, Accessories, Footwear).
+- **Smart Search**: High-performance search that scans both product names and descriptions.
+- **Persistent Cart & Wishlist**: Zustand-powered stores that save your items across browser refreshes.
+- **Tiered Special Offers**: Automated discount banners for high-value orders ($300+ and $500+).
 
-## 📦 Getting Started
+### ⚙️ Robust Architecture
+- **Mock Database Mode**: Resilient development environment that works even during database downtime.
+- **RESTful API**: Clean, scalable backend built with Node.js and Express.
+- **Cloudinary Integration**: High-speed image hosting for crisp product visuals.
 
-### Prerequisites
-- Node.js installed.
-- MongoDB Atlas account.
-- Cloudinary account for images.
+---
 
-### Installation
+## 🚀 Tech Stack
 
-1. **Clone the repository**
-   ```bash
-   git clone <your-repo-url>
-   cd ShopNest
-   ```
+**Frontend:**
+- **React.js**: Component-based UI library.
+- **Tailwind CSS**: Utility-first styling for premium design.
+- **Zustand**: Lightweight, persistent state management.
+- **Framer Motion**: Smooth, high-end micro-animations.
+- **Lucide React**: Beautiful, consistent iconography.
 
-2. **Backend Setup**
-   ```bash
-   cd backend
-   npm install
-   # Create .env from .env.example and fill in your credentials
-   npm run dev
-   ```
+**Backend:**
+- **Node.js & Express**: Fast and scalable server-side environment.
+- **Mongoose/MongoDB**: Powerful NoSQL database integration.
+- **JWT Authentication**: Secure user sessions and role-based access.
 
-3. **Frontend Setup**
-   ```bash
-   cd ../frontend
-   npm install
-   # Create .env from .env.example
-   npm run dev
-   ```
+---
 
-## 📄 Deployment Guide
+## 🛠️ Getting Started
 
-Refer to the [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md) for detailed instructions on deploying to Render.
+### 1. Clone the repository
+```bash
+git clone https://github.com/rohith24576/Codsoft_Task1.git
+cd Codsoft_Task1
+```
 
-## 📝 License
-This project is licensed under the MIT License.
+### 2. Install Dependencies
+```bash
+# Install backend dependencies
+cd backend
+npm install
+
+# Install frontend dependencies
+cd ../frontend
+npm install
+```
+
+### 3. Environment Setup
+Create a `.env` file in the `backend` folder:
+```env
+PORT=5000
+MONGODB_URI=your_mongodb_uri
+JWT_SECRET=your_secret
+USE_MOCK_DB=true
+```
+
+### 4. Run Locally
+```bash
+# Start Backend (from /backend)
+npm run dev
+
+# Start Frontend (from /frontend)
+npm run dev
+```
+
+---
+
+## 📂 Project Structure
+
+```text
+ShopNest/
+├── frontend/
+│   ├── src/
+│   │   ├── components/  # Reusable UI elements
+│   │   ├── pages/       # Main views (Home, Shop, Cart)
+│   │   └── store/       # Zustand state management
+├── backend/
+│   ├── src/
+│   │   ├── controllers/ # Business logic
+│   │   ├── models/      # Database schemas
+│   │   └── routes/      # API endpoints
+└── README.md
+```
+
+---
+
+## 👤 Author
+
+**Rohith**
+- GitHub: [@rohith24576](https://github.com/rohith24576)
+
+---
+*Created as part of the Codsoft Web Development Internship.*
