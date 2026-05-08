@@ -1,112 +1,133 @@
-# 🛍️ ShopNest - Premium E-Commerce Experience
+# 🛍️ ShopNest: The Future of Luxury E-Commerce
 
-[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Framer Motion](https://img.shields.io/badge/Framer_Motion-0055FF?style=for-the-badge&logo=framer&logoColor=white)](https://www.framer.com/motion/)
-
-ShopNest is a state-of-the-art, full-stack e-commerce platform designed with a **Luxury Minimalist** aesthetic. It provides a seamless shopping experience featuring dynamic product filtering, persistent state management, and a high-performance backend.
+ShopNest is a premium, full-stack e-commerce ecosystem engineered for high-performance and sophisticated user experiences. This project transcends standard online stores by integrating a **Luxury Design Language** with a robust, scalable backend architecture.
 
 ---
 
-## ✨ Key Features
-
-### 💎 Premium User Interface
-- **Luxury Hero Section**: Immersive high-fashion visuals with layered parallax animations.
-- **Responsive Design**: Flawless experience across Mobile, Tablet, and Desktop.
-- **Glassmorphism UI**: Modern blurred-glass effects for a sophisticated "Elite" feel.
-
-### 🛒 Advanced Shopping Experience
-- **Dynamic Filtering**: Instant filtering by category (Men, Women, Accessories, Footwear).
-- **Smart Search**: High-performance search that scans both product names and descriptions.
-- **Persistent Cart & Wishlist**: Zustand-powered stores that save your items across browser refreshes.
-- **Tiered Special Offers**: Automated discount banners for high-value orders ($300+ and $500+).
-
-### ⚙️ Robust Architecture
-- **Mock Database Mode**: Resilient development environment that works even during database downtime.
-- **RESTful API**: Clean, scalable backend built with Node.js and Express.
-- **Cloudinary Integration**: High-speed image hosting for crisp product visuals.
+## 💎 Project Philosophy
+ShopNest was built with three pillars in mind: **Performance, Elegance, and Resilience.**
+- **Performance**: Optimized React rendering and lightweight state management with Zustand.
+- **Elegance**: A bespoke design system inspired by high-fashion brands, utilizing glassmorphism and fluid motion.
+- **Resilience**: A smart "Mock-Sync" backend mode that ensures the UI remains fully functional even during primary database maintenance.
 
 ---
 
-## 🚀 Tech Stack
+## 🚀 Technical Core Stack
 
-**Frontend:**
-- **React.js**: Component-based UI library.
-- **Tailwind CSS**: Utility-first styling for premium design.
-- **Zustand**: Lightweight, persistent state management.
-- **Framer Motion**: Smooth, high-end micro-animations.
-- **Lucide React**: Beautiful, consistent iconography.
+### 💻 Frontend Architecture
+- **Framework**: [React 18](https://reactjs.org/) (Hooks, Functional Components)
+- **State Management**: [Zustand](https://github.com/pmndrs/zustand) (Persistent stores for Cart & Wishlist)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) (Custom Design Tokens)
+- **Animations**: [Framer Motion](https://www.framer.com/motion/) (Orchestrated spring-based transitions)
+- **Icons**: [Lucide React](https://lucide.dev/) (Consistent, accessible iconography)
+- **Navigation**: [React Router DOM v6](https://reactrouter.com/)
 
-**Backend:**
-- **Node.js & Express**: Fast and scalable server-side environment.
-- **Mongoose/MongoDB**: Powerful NoSQL database integration.
-- **JWT Authentication**: Secure user sessions and role-based access.
-
----
-
-## 🛠️ Getting Started
-
-### 1. Clone the repository
-```bash
-git clone https://github.com/rohith24576/Codsoft_Task1.git
-cd Codsoft_Task1
-```
-
-### 2. Install Dependencies
-```bash
-# Install backend dependencies
-cd backend
-npm install
-
-# Install frontend dependencies
-cd ../frontend
-npm install
-```
-
-### 3. Environment Setup
-Create a `.env` file in the `backend` folder:
-```env
-PORT=5000
-MONGODB_URI=your_mongodb_uri
-JWT_SECRET=your_secret
-USE_MOCK_DB=true
-```
-
-### 4. Run Locally
-```bash
-# Start Backend (from /backend)
-npm run dev
-
-# Start Frontend (from /frontend)
-npm run dev
-```
+### ⚙️ Backend Architecture
+- **Runtime**: [Node.js](https://nodejs.org/)
+- **Framework**: [Express.js](https://expressjs.com/) (Middleware-first design)
+- **Database**: [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) (NoSQL storage)
+- **ODM**: [Mongoose](https://mongoosejs.com/) (Schema-based modeling)
+- **Authentication**: [JWT (JSON Web Tokens)](https://jwt.io/) & [Bcrypt.js](https://github.com/kelektiv/node.bcrypt.js)
+- **Cloud Storage**: [Cloudinary](https://cloudinary.com/) (Dynamic image optimization)
 
 ---
 
-## 📂 Project Structure
+## ✨ Advanced Features & Implementation
+
+### 🛡️ Secure User System
+- **JWT-Powered Auth**: Secure, stateless authentication with Access & Refresh tokens.
+- **Role-Based Access**: Specialized views and permissions for Admin and Regular Users.
+- **Profile Management**: Dynamic avatar uploads and order history tracking.
+
+### 🔍 Intelligence Search & Filter
+- **Multi-Vector Search**: Regex-powered search across product titles and detailed descriptions.
+- **Categorical Intelligence**: Real-time filtering with URL-state synchronization (deep linking support).
+- **Sorting Engine**: Client-side sorting for price, ratings, and newest arrivals.
+
+### 📦 Commerce Logic
+- **Persistent Bag**: Automated local-storage synchronization ensures zero data loss on refresh.
+- **Tiered Coupon System**: Logic-based discount engine (`SAVE300`, `VIP500`) applied based on real-time subtotal calculations.
+- **Dynamic Wishlist**: Heart-toggle system integrated across Product Cards and individual Detail pages.
+
+---
+
+## 📡 API Endpoints (Documentation)
+
+### 🛍️ Products
+| Method | Endpoint | Description | Access |
+| :--- | :--- | :--- | :--- |
+| GET | `/api/v1/products` | Fetch all products (with filters) | Public |
+| GET | `/api/v1/products/:id` | Get detailed product info | Public |
+| POST | `/api/v1/products` | Create new product | Admin |
+| GET | `/api/v1/products/featured` | Get top-rated featured items | Public |
+
+### 📂 Categories
+| Method | Endpoint | Description | Access |
+| :--- | :--- | :--- | :--- |
+| GET | `/api/v1/categories` | List all product categories | Public |
+| POST | `/api/v1/categories` | Create new category | Admin |
+
+### 🎫 Coupons
+| Method | Endpoint | Description | Access |
+| :--- | :--- | :--- | :--- |
+| POST | `/api/v1/coupons/validate` | Check if a coupon is valid | User |
+
+---
+
+## 📂 Advanced Project Structure
 
 ```text
 ShopNest/
 ├── frontend/
-│   ├── src/
-│   │   ├── components/  # Reusable UI elements
-│   │   ├── pages/       # Main views (Home, Shop, Cart)
-│   │   └── store/       # Zustand state management
-├── backend/
-│   ├── src/
-│   │   ├── controllers/ # Business logic
-│   │   ├── models/      # Database schemas
-│   │   └── routes/      # API endpoints
-└── README.md
+│   ├── public/              # Static assets
+│   └── src/
+│       ├── components/      # Atomic UI components
+│       │   ├── ProductCard/ # Reusable product grid item
+│       │   ├── Navbar/      # Sticky blur-navigation
+│       │   └── Skeleton/    # Shimmer loading states
+│       ├── pages/           # Page-level components
+│       ├── store/           # Zustand state slices
+│       └── utils/           # API interceptors & formatters
+└── backend/
+    └── src/
+        ├── controllers/     # MVC: Logic handlers
+        ├── models/          # MongoDB Schema definitions
+        ├── routes/          # Express Router endpoints
+        ├── db/              # Database connection logic
+        ├── middlewares/     # Auth, Upload, and Error handlers
+        └── utils/           # Global API response/error wrappers
 ```
 
 ---
 
-## 👤 Author
+## 🛠️ Installation & Deployment
 
-**Rohith**
-- GitHub: [@rohith24576](https://github.com/rohith24576)
+### Environment Variables (.env)
+Required keys for full functionality:
+```env
+PORT=5000
+MONGODB_URI=mongodb+srv://...
+JWT_SECRET=your_ultra_secret_key
+CLOUDINARY_CLOUD_NAME=...
+CLOUDINARY_API_KEY=...
+CLOUDINARY_API_SECRET=...
+USE_MOCK_DB=true # Set to false for live DB connection
+```
+
+### Installation Steps
+1. **Clone & Install**: `npm install` in both folders.
+2. **Database Seed**: Run `npm run seed` in backend to populate categories.
+3. **Development**: Use `npm run dev` for hot-reloading on both tiers.
 
 ---
-*Created as part of the Codsoft Web Development Internship.*
+
+## 👤 Author & Contribution
+
+**Rohith**  
+*Lead Developer - ShopNest Ecosystem*
+
+- **GitHub**: [@rohith24576](https://github.com/rohith24576)
+- **Project Link**: [ShopNest Repository](https://github.com/rohith24576/Codsoft_Task1)
+
+---
+🏆 *Developed as a high-fidelity project for the Codsoft Web Development Fellowship.*
