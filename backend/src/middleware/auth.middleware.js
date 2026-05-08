@@ -11,6 +11,18 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
             throw new ApiError(401, "Unauthorized request");
         }
 
+        // MOCK DB LOGIC
+        if (process.env.USE_MOCK_DB === "true" && (token === "mock_access_token_jwt" || token.startsWith("mock_"))) {
+            req.user = {
+                _id: "mock_user_123",
+                fullName: "Demo User",
+                username: "demo_user",
+                email: "demo@example.com",
+                role: "ADMIN" // Giving admin rights for easy testing
+            };
+            return next();
+        }
+
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
         const user = await User.findById(decodedToken?._id).select("-password -refreshToken");
