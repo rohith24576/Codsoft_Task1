@@ -3,9 +3,10 @@ import { useCartStore } from '../store/useCartStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { MapPin, CreditCard, ShieldCheck, ArrowLeft, Loader2, CheckCircle } from 'lucide-react';
+import { MapPin, CreditCard, ShieldCheck, ArrowLeft, Loader2, CheckCircle, Download } from 'lucide-react';
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import { jsPDF } from 'jspdf';
 
 const Checkout = () => {
     const { cart, getCartTotal, clearCart } = useCartStore();
@@ -13,6 +14,7 @@ const Checkout = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [orderSuccess, setOrderSuccess] = useState(false);
+    const [lastOrder, setLastOrder] = useState(null);
     const { subtotal, total } = getCartTotal();
 
     const [address, setAddress] = useState({
@@ -52,6 +54,7 @@ const Checkout = () => {
             await axios.post('http://localhost:5000/api/v1/orders', orderData, {
                 headers: { Authorization: `Bearer ${token}` }
             });
+            setLastOrder(orderData);
             setOrderSuccess(true);
             clearCart();
             toast.success('Order placed successfully!');
@@ -60,6 +63,67 @@ const Checkout = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const generateInvoice = () => {
+        if (!lastOrder) return;
+        
+        const doc = new jsPDF();
+        
+        // Header
+        doc.setFontSize(22);
+        doc.setTextColor(20, 20, 20);
+        doc.text("SHOPNEST", 105, 20, { align: "center" });
+        
+        doc.setFontSize(10);
+        doc.setTextColor(100, 100, 100);
+        doc.text("Premium E-Commerce Experience", 105, 27, { align: "center" });
+        
+        // Horizontal Line
+        doc.setDrawColor(200, 200, 200);
+        doc.line(20, 35, 190, 35);
+        
+        // Order Info
+        doc.setFontSize(12);
+        doc.setTextColor(0, 0, 0);
+        doc.text(`Invoice To: ${user?.fullName || 'Customer'}`, 20, 50);
+        doc.text(`Order Date: ${new Date().toLocaleDateString()}`, 20, 57);
+        doc.text(`Payment: ${lastOrder.paymentMethod}`, 20, 64);
+        
+        // Table Header
+        doc.setFillColor(245, 245, 245);
+        doc.rect(20, 80, 170, 10, 'F');
+        doc.setFont("helvetica", "bold");
+        doc.text("Item", 25, 87);
+        doc.text("Qty", 120, 87);
+        doc.text("Price", 145, 87);
+        doc.text("Total", 170, 87);
+        
+        // Items
+        doc.setFont("helvetica", "normal");
+        let y = 97;
+        lastOrder.orderItems.forEach((item) => {
+            doc.text(item.name.substring(0, 30), 25, y);
+            doc.text(item.qty.toString(), 122, y);
+            doc.text(`$${item.price}`, 145, y);
+            doc.text(`$${(item.price * item.qty).toFixed(2)}`, 170, y);
+            y += 10;
+        });
+        
+        // Footer Line
+        doc.line(20, y + 5, 190, y + 5);
+        
+        // Totals
+        doc.setFont("helvetica", "bold");
+        doc.text("Grand Total:", 140, y + 20);
+        doc.text(`$${lastOrder.totalPrice.toFixed(2)}`, 170, y + 20);
+        
+        // Thank you
+        doc.setFontSize(10);
+        doc.setTextColor(150, 150, 150);
+        doc.text("Thank you for choosing ShopNest!", 105, y + 50, { align: "center" });
+        
+        doc.save(`ShopNest_Invoice_${Date.now()}.pdf`);
     };
 
     if (orderSuccess) {
@@ -71,7 +135,18 @@ const Checkout = () => {
                     </div>
                     <h1 className="text-4xl font-bold text-primary mb-4">Order Confirmed!</h1>
                     <p className="text-secondary mb-10">Thank you for your purchase. Your order is being processed.</p>
-                    <button onClick={() => navigate('/')} className="btn-primary">Back to Home</button>
+                    <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                        <button onClick={() => navigate('/')} className="btn-primary w-full sm:w-auto">
+                            Back to Home
+                        </button>
+                        <button 
+                            onClick={generateInvoice} 
+                            className="flex items-center justify-center space-x-2 px-8 py-3.5 border-2 border-primary text-primary rounded-full font-bold hover:bg-primary hover:text-white transition-all w-full sm:w-auto"
+                        >
+                            <Download size={18} />
+                            <span>Download Invoice</span>
+                        </button>
+                    </div>
                 </motion.div>
             </div>
         );
