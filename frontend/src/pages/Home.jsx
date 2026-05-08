@@ -1,13 +1,40 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, Star, ShieldCheck, Truck, RotateCcw, Tag, ShoppingBag } from 'lucide-react';
+import { ArrowRight, Star, ShieldCheck, Truck, RotateCcw, Tag, ShoppingBag, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { useProductStore } from '../store/useProductStore';
 import ProductCard from '../components/ProductCard';
 import { ProductSkeleton } from '../components/Skeleton';
 
 const Home = () => {
     const { featuredProducts, fetchFeaturedProducts, categories, fetchCategories, loading } = useProductStore();
+    const [email, setEmail] = useState('');
+
+    const announcements = [
+        "Free Express Shipping on orders over $150",
+        "New 2026 Winter Collection is here! ❄️",
+        "Join the Nest and get 10% off your first order"
+    ];
+    const [currentAnnouncement, setCurrentAnnouncement] = useState(0);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentAnnouncement((prev) => (prev + 1) % announcements.length);
+        }, 4000);
+        return () => clearInterval(timer);
+    }, []);
+
+    const handleSubscribe = (e) => {
+        e.preventDefault();
+        if (email) {
+            toast.success('Welcome to the Nest! 🦅 Your subscription was successful.', {
+                duration: 4000,
+                icon: '✨'
+            });
+            setEmail('');
+        }
+    };
 
     useEffect(() => {
         fetchFeaturedProducts();
@@ -95,6 +122,25 @@ const Home = () => {
                     <div className="w-[1px] h-12 bg-gradient-to-b from-white/60 to-transparent mx-auto"></div>
                 </motion.div>
             </section>
+
+            {/* Announcement Bar (Moved) */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
+                <div className="bg-primary text-white py-3 rounded-2xl text-[10px] font-bold tracking-[0.2em] uppercase overflow-hidden relative h-10 flex items-center justify-center">
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={currentAnnouncement}
+                            initial={{ y: 10, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            exit={{ y: -10, opacity: 0 }}
+                            transition={{ duration: 0.5 }}
+                            className="flex items-center space-x-2"
+                        >
+                            <Sparkles size={10} className="text-gray-400" />
+                            <span>{announcements[currentAnnouncement]}</span>
+                        </motion.div>
+                    </AnimatePresence>
+                </div>
+            </div>
 
             {/* Features Bar */}
             <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -233,9 +279,12 @@ const Home = () => {
                         <p className="text-gray-400 mb-10 text-lg">
                             Subscribe to receive updates, access to exclusive deals, and more.
                         </p>
-                        <form className="flex flex-col sm:row space-y-4 sm:space-y-0 sm:space-x-4">
+                        <form onSubmit={handleSubscribe} className="flex flex-col sm:row space-y-4 sm:space-y-0 sm:space-x-4">
                             <input 
                                 type="email" 
+                                required
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                                 placeholder="Your email address" 
                                 className="flex-grow px-6 py-4 rounded-full bg-white/10 border border-white/20 text-white placeholder:text-gray-500 focus:outline-none focus:border-white transition-colors"
                             />
