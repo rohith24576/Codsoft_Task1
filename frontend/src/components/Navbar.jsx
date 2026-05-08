@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShoppingCart, Heart, Search, User, Menu, X, LogOut } from 'lucide-react';
+import { ShoppingCart, Heart, Search, User, Menu, X, LogOut, Sparkles } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useCartStore } from '../store/useCartStore';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -14,7 +14,37 @@ const Navbar = () => {
 
     const cartCount = cart.reduce((acc, item) => acc + item.qty, 0);
 
+    const announcements = [
+        "Free Express Shipping on orders over $150",
+        "New 2026 Winter Collection is here! ❄️",
+        "Join the Nest and get 10% off your first order"
+    ];
+    const [currentAnnouncement, setCurrentAnnouncement] = useState(0);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentAnnouncement((prev) => (prev + 1) % announcements.length);
+        }, 4000);
+        return () => clearInterval(timer);
+    }, []);
+
     return (
+        <>
+        <div className="bg-primary text-white py-2 text-[10px] font-bold tracking-[0.2em] uppercase overflow-hidden relative h-8 flex items-center justify-center">
+            <AnimatePresence mode="wait">
+                <motion.div
+                    key={currentAnnouncement}
+                    initial={{ y: 10, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -10, opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="flex items-center space-x-2"
+                >
+                    <Sparkles size={10} className="text-gray-400" />
+                    <span>{announcements[currentAnnouncement]}</span>
+                </motion.div>
+            </AnimatePresence>
+        </div>
         <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
@@ -130,6 +160,7 @@ const Navbar = () => {
                 )}
             </AnimatePresence>
         </nav>
+        </>
     );
 };
 
