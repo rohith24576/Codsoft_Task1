@@ -1,0 +1,183 @@
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useCartStore } from '../store/useCartStore';
+import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, Tag, X, ShieldCheck, Truck } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+
+const Cart = () => {
+    const { cart, removeFromCart, updateQty, coupon, applyCoupon, removeCoupon, getCartTotal } = useCartStore();
+    const [couponCode, setCouponCode] = useState('');
+    const [isValidating, setIsValidating] = useState(false);
+    const { subtotal, total } = getCartTotal();
+    const navigate = useNavigate();
+
+    const handleApplyCoupon = async (e) => {
+        e.preventDefault();
+        setIsValidating(true);
+        try {
+            const response = await axios.post('http://localhost:5000/api/v1/coupons/validate', { code: couponCode });
+            applyCoupon(response.data.data);
+            setCouponCode('');
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Invalid coupon');
+        } finally {
+            setIsValidating(false);
+        }
+    };
+
+    if (cart.length === 0) {
+        return (
+            <div className="max-w-7xl mx-auto px-4 py-32 text-center">
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="flex flex-col items-center"
+                >
+                    <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mb-8">
+                        <ShoppingBag size={40} className="text-gray-300" />
+                    </div>
+                    <h1 className="text-3xl font-bold text-primary mb-4">Your cart is empty</h1>
+                    <p className="text-secondary mb-10 max-w-sm mx-auto">Looks like you haven't added anything to your cart yet. Let's find something special for you.</p>
+                    <Link to="/shop" className="btn-primary">Start Shopping</Link>
+                </motion.div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div className="flex justify-between items-end mb-12">
+                <h1 className="text-4xl font-bold text-primary">Your Shopping Bag</h1>
+                <button 
+                    onClick={() => {
+                        useCartStore.getState().clearCart();
+                        toast.success('Cart cleared');
+                    }}
+                    className="text-sm font-medium text-secondary hover:text-red-500 transition-colors flex items-center space-x-2"
+                >
+                    <Trash2 size={16} />
+                    <span>Clear Bag</span>
+                </button>
+            </div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+                {/* Cart Items */}
+                <div className="lg:col-span-2 space-y-8">
+                    <AnimatePresence>
+                        {cart.map((item) => (
+                            <motion.div 
+                                key={item._id}
+                                layout
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, x: -100 }}
+                                className="flex flex-col sm:row items-center space-y-4 sm:space-y-0 sm:space-x-6 pb-8 border-b border-gray-100"
+                            >
+                                <div className="w-24 h-24 rounded-2xl overflow-hidden bg-gray-50 border border-gray-100 flex-shrink-0">
+                                    <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover" />
+                                </div>
+                                <div className="flex-grow text-center sm:text-left">
+                                    <h3 className="font-bold text-primary mb-1">{item.name}</h3>
+                                    <p className="text-sm text-secondary mb-2">{item.category.name}</p>
+                                    <div className="flex items-center justify-center sm:justify-start space-x-4">
+                                        <div className="flex items-center bg-gray-50 rounded-full px-4 py-1.5 border border-gray-100">
+                                            <button onClick={() => updateQty(item._id, item.qty - 1)} className="p-1 hover:text-primary"><Minus size={14} /></button>
+                                            <span className="w-8 text-center font-bold text-sm">{item.qty}</span>
+                                            <button onClick={() => updateQty(item._id, item.qty + 1)} className="p-1 hover:text-primary"><Plus size={14} /></button>
+                                        </div>
+                                        <button onClick={() => removeFromCart(item._id)} className="text-red-400 hover:text-red-600 transition-colors">
+                                            <Trash2 size={18} />
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className="text-right">
+                                    <p className="font-bold text-lg">${(item.price * item.qty).toFixed(2)}</p>
+                                    <p className="text-xs text-secondary">${item.price} each</p>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </AnimatePresence>
+                </div>
+
+                {/* Summary */}
+                <div className="space-y-8">
+                    <div className="bg-gray-50 rounded-[2.5rem] p-10 border border-gray-100">
+                        <h2 className="text-xl font-bold mb-8">Order Summary</h2>
+                        
+                        <div className="space-y-4 mb-8">
+                            <div className="flex justify-between text-secondary">
+                                <span>Subtotal</span>
+                                <span>${subtotal.toFixed(2)}</span>
+                            </div>
+                            <div className="flex justify-between text-secondary">
+                                <span>Shipping</span>
+                                <span className="text-green-500 font-medium">Free</span>
+                            </div>
+                            {coupon && (
+                                <div className="flex justify-between text-green-500">
+                                    <span>Discount ({coupon.code})</span>
+                                    <span>-${((subtotal * coupon.discount) / 100).toFixed(2)}</span>
+                                </div>
+                            )}
+                            <div className="pt-4 border-t border-gray-200 flex justify-between text-xl font-bold text-primary">
+                                <span>Total</span>
+                                <span>${total.toFixed(2)}</span>
+                            </div>
+                        </div>
+
+                        {/* Coupon Form */}
+                        {!coupon ? (
+                            <form onSubmit={handleApplyCoupon} className="relative mb-8">
+                                <Tag className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                                <input 
+                                    type="text" 
+                                    placeholder="Coupon code"
+                                    value={couponCode}
+                                    onChange={(e) => setCouponCode(e.target.value)}
+                                    className="w-full pl-12 pr-24 py-4 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:border-primary transition-colors text-sm"
+                                />
+                                <button 
+                                    type="submit"
+                                    disabled={isValidating || !couponCode}
+                                    className="absolute right-2 top-2 bottom-2 px-4 bg-primary text-white rounded-xl text-xs font-bold hover:bg-opacity-90 disabled:opacity-50"
+                                >
+                                    {isValidating ? '...' : 'Apply'}
+                                </button>
+                            </form>
+                        ) : (
+                            <div className="flex items-center justify-between bg-green-50 border border-green-100 rounded-2xl p-4 mb-8">
+                                <div className="flex items-center space-x-3">
+                                    <Tag className="text-green-600" size={18} />
+                                    <div>
+                                        <p className="text-xs font-bold text-green-800">{coupon.code} Applied</p>
+                                        <p className="text-[10px] text-green-600">{coupon.discount}% discount</p>
+                                    </div>
+                                </div>
+                                <button onClick={removeCoupon} className="p-1 hover:bg-green-100 rounded-full text-green-800">
+                                    <X size={16} />
+                                </button>
+                            </div>
+                        )}
+
+                        <button 
+                            onClick={() => navigate('/checkout')}
+                            className="w-full btn-primary py-4 flex items-center justify-center space-x-2 shadow-premium"
+                        >
+                            <span>Checkout Now</span>
+                            <ArrowRight size={18} />
+                        </button>
+                    </div>
+
+                    <div className="flex items-center justify-center space-x-4 text-xs text-secondary font-medium">
+                        <div className="flex items-center space-x-1"><ShieldCheck size={14} /> <span>Secure Payment</span></div>
+                        <div className="flex items-center space-x-1"><Truck size={14} /> <span>Fast Delivery</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default Cart;
