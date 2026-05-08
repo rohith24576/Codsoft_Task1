@@ -24,10 +24,15 @@ const generateAccessAndRefereshTokens = async (userId) => {
 const registerUser = asyncHandler(async (req, res) => {
     const { fullName, email, username, password } = req.body;
 
-    if (
-        [fullName, email, username, password].some((field) => field?.trim() === "")
-    ) {
+    if ([fullName, email, username, password].some((field) => field?.trim() === "")) {
         throw new ApiError(400, "All fields are required");
+    }
+
+    // MOCK DB LOGIC
+    if (process.env.USE_MOCK_DB === "true") {
+        return res.status(201).json(
+            new ApiResponse(200, { fullName, email, username }, "User registered Successfully (Mock Mode)")
+        );
     }
 
     const existedUser = await User.findOne({
@@ -54,7 +59,6 @@ const registerUser = asyncHandler(async (req, res) => {
     return res.status(201).json(
         new ApiResponse(200, createdUser, "User registered Successfully")
     );
-
 });
 
 const loginUser = asyncHandler(async (req, res) => {
@@ -62,6 +66,29 @@ const loginUser = asyncHandler(async (req, res) => {
 
     if (!(username || email)) {
         throw new ApiError(400, "username or email is required");
+    }
+
+    // MOCK DB LOGIC
+    if (process.env.USE_MOCK_DB === "true") {
+        const mockUser = {
+            _id: "mock_user_123",
+            fullName: "Demo User",
+            username: username || "demo_user",
+            email: email || "demo@example.com",
+            avatar: "https://i.pravatar.cc/300"
+        };
+        const mockAccessToken = "mock_access_token_jwt";
+        
+        return res
+            .status(200)
+            .cookie("accessToken", mockAccessToken, { httpOnly: true, secure: true })
+            .json(
+                new ApiResponse(
+                    200,
+                    { user: mockUser, accessToken: mockAccessToken },
+                    "User logged In Successfully (Mock Mode)"
+                )
+            );
     }
 
     const user = await User.findOne({
@@ -104,6 +131,16 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
+    // MOCK DB LOGIC
+    if (process.env.USE_MOCK_DB === "true") {
+        const options = { httpOnly: true, secure: true };
+        return res
+            .status(200)
+            .clearCookie("accessToken", options)
+            .clearCookie("refreshToken", options)
+            .json(new ApiResponse(200, {}, "User logged out (Mock Mode)"));
+    }
+
     await User.findByIdAndUpdate(
         req.user._id,
         {
@@ -193,6 +230,12 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
 });
 
 const getCurrentUser = asyncHandler(async (req, res) => {
+    // MOCK DB LOGIC
+    if (process.env.USE_MOCK_DB === "true") {
+        return res
+            .status(200)
+            .json(new ApiResponse(200, req.user || { fullName: "Demo User", email: "demo@example.com" }, "Current user fetched (Mock Mode)"));
+    }
     return res
         .status(200)
         .json(new ApiResponse(200, req.user, "Current user fetched successfully"));
