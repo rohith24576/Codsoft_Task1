@@ -19,6 +19,25 @@ const createOrder = asyncHandler(async (req, res) => {
         throw new ApiError(400, "No order items");
     }
 
+    // MOCK DB LOGIC
+    if (process.env.USE_MOCK_DB === "true") {
+        const mockOrder = {
+            _id: "mock_order_" + Date.now(),
+            orderItems,
+            user: req.user?._id || "mock_user_123",
+            shippingAddress,
+            paymentMethod,
+            itemsPrice,
+            taxPrice,
+            shippingPrice,
+            totalPrice,
+            isPaid: true,
+            paidAt: new Date(),
+            createdAt: new Date(),
+        };
+        return res.status(201).json(new ApiResponse(201, mockOrder, "Order created successfully (Mock Mode)"));
+    }
+
     const order = new Order({
         orderItems: orderItems.map((x) => ({
             ...x,
@@ -92,6 +111,10 @@ const updateOrderToDelivered = asyncHandler(async (req, res) => {
 });
 
 const getMyOrders = asyncHandler(async (req, res) => {
+    // MOCK DB LOGIC
+    if (process.env.USE_MOCK_DB === "true") {
+        return res.status(200).json(new ApiResponse(200, [], "Orders fetched successfully (Mock Mode)"));
+    }
     const orders = await Order.find({ user: req.user._id });
     return res.status(200).json(new ApiResponse(200, orders, "Orders fetched successfully"));
 });
