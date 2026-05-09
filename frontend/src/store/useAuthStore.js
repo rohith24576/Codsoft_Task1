@@ -70,4 +70,17 @@ export const useAuthStore = create((set, get) => ({
             toast.error('Logout failed');
         }
     },
+
+    updateAvatar: (newAvatar) => {
+        set(state => ({
+            user: state.user ? { ...state.user, avatar: newAvatar } : null
+        }));
+    },
+
+    updateProfile: (updatedData) => {
+        set(state => ({
+            user: state.user ? { ...state.user, ...updatedData } : null
+        }));
+        toast.success('Profile updated successfully! ✨');
+    }
 }));

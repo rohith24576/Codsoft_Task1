@@ -11,17 +11,35 @@ const Shop = () => {
     const { products, fetchProducts, loading, categories, fetchCategories } = useProductStore();
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     
+    // Form States
+    const [minPrice, setMinPrice] = useState(searchParams.get('minPrice') || '');
+    const [maxPrice, setMaxPrice] = useState(searchParams.get('maxPrice') || '');
+    
     const search = searchParams.get('search') || '';
     const category = searchParams.get('category') || '';
     const sort = searchParams.get('sort') || 'createdAt:desc';
+    const currentMin = searchParams.get('minPrice') || '';
+    const currentMax = searchParams.get('maxPrice') || '';
 
     useEffect(() => {
-        fetchProducts({ search, category, sort });
+        fetchProducts({ search, category, sort, minPrice: currentMin, maxPrice: currentMax });
         fetchCategories();
-    }, [search, category, sort, fetchProducts, fetchCategories]);
+    }, [search, category, sort, currentMin, currentMax, fetchProducts, fetchCategories]);
 
     const handleSortChange = (e) => {
         setSearchParams({ ...Object.fromEntries(searchParams), sort: e.target.value });
+    };
+
+    const applyFilters = () => {
+        const params = Object.fromEntries(searchParams);
+        if (minPrice) params.minPrice = minPrice;
+        else delete params.minPrice;
+        
+        if (maxPrice) params.maxPrice = maxPrice;
+        else delete params.maxPrice;
+        
+        setSearchParams(params);
+        setIsFilterOpen(false);
     };
 
     const handleCategoryChange = (catId) => {
@@ -32,6 +50,12 @@ const Shop = () => {
             params.category = catId;
         }
         setSearchParams(params);
+    };
+
+    const clearFilters = () => {
+        setMinPrice('');
+        setMaxPrice('');
+        setSearchParams({});
     };
 
     return (
@@ -69,9 +93,9 @@ const Shop = () => {
                 </div>
             </div>
 
-            {/* Active Filters */}
-            {(category || search) && (
-                <div className="flex flex-wrap gap-2 mb-8">
+            {/* Active Filters Bar */}
+            {(category || search || currentMin || currentMax) && (
+                <div className="flex flex-wrap items-center gap-2 mb-8">
                     {search && (
                         <span className="flex items-center space-x-2 px-3 py-1 bg-gray-100 rounded-full text-xs font-medium text-primary">
                             <span>Search: {search}</span>
@@ -88,6 +112,20 @@ const Shop = () => {
                             <button onClick={() => handleCategoryChange('')}><X size={12} /></button>
                         </span>
                     )}
+                    {(currentMin || currentMax) && (
+                        <span className="flex items-center space-x-2 px-3 py-1 bg-primary/5 rounded-full text-xs font-medium text-primary border border-primary/10">
+                            <span>Price: ${currentMin || 0} - ${currentMax || '∞'}</span>
+                            <button onClick={() => {
+                                const params = Object.fromEntries(searchParams);
+                                delete params.minPrice;
+                                delete params.maxPrice;
+                                setMinPrice('');
+                                setMaxPrice('');
+                                setSearchParams(params);
+                            }}><X size={12} /></button>
+                        </span>
+                    )}
+                    <button onClick={clearFilters} className="text-xs font-bold text-gray-400 hover:text-primary transition-colors ml-2">Clear All</button>
                 </div>
             )}
 
@@ -100,7 +138,7 @@ const Shop = () => {
                         <ProductCard key={product._id} product={product} />
                     ))
                 ) : (
-                    <div className="col-span-full py-20 text-center">
+                    <div className="col-span-full py-20 text-center bg-gray-50 rounded-[3rem] border border-dashed border-gray-200">
                         <h3 className="text-xl font-bold text-primary mb-2">No products found</h3>
                         <p className="text-secondary">Try adjusting your filters or search query</p>
                     </div>
@@ -157,14 +195,35 @@ const Shop = () => {
                                 <div>
                                     <h4 className="text-sm font-bold uppercase tracking-wider mb-6">Price Range</h4>
                                     <div className="grid grid-cols-2 gap-4">
-                                        <input type="number" placeholder="Min" className="input-field py-2" />
-                                        <input type="number" placeholder="Max" className="input-field py-2" />
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Min Price</label>
+                                            <input 
+                                                type="number" 
+                                                placeholder="0" 
+                                                className="w-full bg-gray-50 border-none rounded-xl px-4 py-3 text-sm font-medium focus:ring-1 focus:ring-primary/20" 
+                                                value={minPrice}
+                                                onChange={(e) => setMinPrice(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Max Price</label>
+                                            <input 
+                                                type="number" 
+                                                placeholder="No limit" 
+                                                className="w-full bg-gray-50 border-none rounded-xl px-4 py-3 text-sm font-medium focus:ring-1 focus:ring-primary/20" 
+                                                value={maxPrice}
+                                                onChange={(e) => setMaxPrice(e.target.value)}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="absolute bottom-8 left-8 right-8">
-                                <button onClick={() => setIsFilterOpen(false)} className="w-full btn-primary py-4">
+                            <div className="absolute bottom-8 left-8 right-8 space-y-4">
+                                <button onClick={clearFilters} className="w-full py-4 text-xs font-bold text-gray-400 hover:text-primary transition-colors">
+                                    Clear All Filters
+                                </button>
+                                <button onClick={applyFilters} className="w-full btn-primary py-4 rounded-2xl shadow-lg">
                                     Apply Filters
                                 </button>
                             </div>

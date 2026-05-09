@@ -4,6 +4,31 @@ import { Order } from "../models/order.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Product } from "../models/product.model.js";
 
+// IN-MEMORY MOCK STORAGE FOR OFFLINE TESTING
+let mockOrders = [
+    {
+        _id: "order_001",
+        createdAt: new Date(Date.now() - 86400000 * 2), // 2 days ago
+        totalPrice: 245.00,
+        status: "Delivered",
+        isPaid: true,
+        orderItems: [
+            { name: "Classic Leather Watch", qty: 1, price: 190.00, image: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?q=80&w=500" },
+            { name: "Linen Button-Down", qty: 1, price: 55.00, image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=500" }
+        ]
+    },
+    {
+        _id: "order_002",
+        createdAt: new Date(Date.now() - 86400000 * 5), // 5 days ago
+        totalPrice: 85.00,
+        status: "Delivered",
+        isPaid: true,
+        orderItems: [
+            { name: "Premium Cotton Tee", qty: 2, price: 35.00, image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=500" }
+        ]
+    }
+];
+
 const createOrder = asyncHandler(async (req, res) => {
     const {
         orderItems,
@@ -34,7 +59,9 @@ const createOrder = asyncHandler(async (req, res) => {
             isPaid: true,
             paidAt: new Date(),
             createdAt: new Date(),
+            status: "Processing"
         };
+        mockOrders.unshift(mockOrder); // Add to beginning of list
         return res.status(201).json(new ApiResponse(201, mockOrder, "Order created successfully (Mock Mode)"));
     }
 
@@ -113,18 +140,38 @@ const updateOrderToDelivered = asyncHandler(async (req, res) => {
 const getMyOrders = asyncHandler(async (req, res) => {
     // MOCK DB LOGIC
     if (process.env.USE_MOCK_DB === "true") {
-        return res.status(200).json(new ApiResponse(200, [], "Orders fetched successfully (Mock Mode)"));
+        const userId = req.user?._id || "mock_user_123";
+        const filteredOrders = mockOrders.filter(order => order.user === userId);
+        return res.status(200).json(new ApiResponse(200, filteredOrders, "Orders fetched successfully (Mock Mode)"));
     }
     const orders = await Order.find({ user: req.user._id });
     return res.status(200).json(new ApiResponse(200, orders, "Orders fetched successfully"));
 });
 
 const getAllOrders = asyncHandler(async (req, res) => {
+    // MOCK DB LOGIC
+    if (process.env.USE_MOCK_DB === "true") {
+        return res.status(200).json(new ApiResponse(200, mockOrders, "All orders fetched successfully (Mock Mode)"));
+    }
     const orders = await Order.find({}).populate("user", "id fullName");
     return res.status(200).json(new ApiResponse(200, orders, "All orders fetched successfully"));
 });
 
 const getSalesAnalytics = asyncHandler(async (req, res) => {
+    // MOCK DB LOGIC
+    if (process.env.USE_MOCK_DB === "true") {
+        const totalSales = mockOrders.reduce((acc, order) => acc + (order.totalPrice || 0), 0);
+        const totalOrders = mockOrders.length;
+        
+        // Simple mock monthly sales
+        const monthlySales = [
+            { _id: 1, total: totalSales * 0.4 },
+            { _id: 2, total: totalSales * 0.6 }
+        ];
+
+        return res.status(200).json(new ApiResponse(200, { totalSales, totalOrders, monthlySales }, "Mock Analytics fetched successfully"));
+    }
+
     const orders = await Order.find({ isPaid: true });
     
     const totalSales = orders.reduce((acc, order) => acc + order.totalPrice, 0);

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -14,6 +14,12 @@ import Profile from './pages/Profile';
 import AdminDashboard from './pages/admin/Dashboard';
 import Categories from './pages/Categories';
 import Wishlist from './pages/Wishlist';
+import Orders from './pages/Orders';
+import InfoPage from './pages/InfoPage';
+import FAQs from './pages/FAQs';
+import Returns from './pages/Returns';
+import ScrollToTop from './components/ScrollToTop';
+import ChatWidget from './components/ChatWidget';
 import { useAuthStore } from './store/useAuthStore';
 import Skeleton from './components/Skeleton';
 
@@ -30,35 +36,56 @@ const ProtectedRoute = ({ children, isAdmin = false }) => {
     return children;
 };
 
-function App() {
+function AppContent() {
     const { checkAuth } = useAuthStore();
+    const location = useLocation();
+    const isAdminPage = location.pathname.startsWith('/admin');
 
     useEffect(() => {
         checkAuth();
     }, [checkAuth]);
 
     return (
+        <div className="flex flex-col min-h-screen">
+            <Navbar />
+            <main className="flex-grow">
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/shop" element={<Shop />} />
+                    <Route path="/product/:id" element={<ProductDetails />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/cart" element={<Cart />} />
+                    <Route path="/categories" element={<Categories />} />
+                    <Route path="/wishlist" element={<Wishlist />} />
+                    <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
+                    <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+                    <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                    <Route path="/admin/*" element={<ProtectedRoute isAdmin={true}><AdminDashboard /></ProtectedRoute>} />
+                    
+                    {/* Info Routes */}
+                    <Route path="/faq" element={<FAQs />} />
+                    <Route path="/shipping" element={<InfoPage />} />
+                    <Route path="/returns" element={<Returns />} />
+                    <Route path="/about" element={<InfoPage />} />
+                    <Route path="/sustainability" element={<InfoPage />} />
+                    <Route path="/contact" element={<InfoPage />} />
+                    <Route path="/privacy" element={<InfoPage />} />
+                    <Route path="/terms" element={<InfoPage />} />
+                </Routes>
+            </main>
+            {!isAdminPage && <Footer />}
+            <Toaster position="bottom-right" />
+        </div>
+    );
+}
+
+function App() {
+    return (
         <Router>
-            <div className="flex flex-col min-h-screen">
-                <Navbar />
-                <main className="flex-grow">
-                    <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/shop" element={<Shop />} />
-                        <Route path="/product/:id" element={<ProductDetails />} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
-                        <Route path="/cart" element={<Cart />} />
-                        <Route path="/categories" element={<Categories />} />
-                        <Route path="/wishlist" element={<Wishlist />} />
-                        <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
-                        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-                        <Route path="/admin/*" element={<ProtectedRoute isAdmin={true}><AdminDashboard /></ProtectedRoute>} />
-                    </Routes>
-                </main>
-                <Footer />
-                <Toaster position="bottom-right" />
-            </div>
+            <ScrollToTop />
+            <ChatWidget />
+            <AppContent />
         </Router>
     );
 }

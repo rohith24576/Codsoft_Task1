@@ -17,7 +17,11 @@ const Cart = () => {
         e.preventDefault();
         setIsValidating(true);
         try {
-            const response = await axios.post('http://localhost:5000/api/v1/coupons/validate', { code: couponCode });
+            const token = localStorage.getItem('accessToken');
+            const response = await axios.post('http://localhost:5000/api/v1/coupons/validate', 
+                { code: couponCode },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
             applyCoupon(response.data.data);
             setCouponCode('');
         } catch (error) {
@@ -118,7 +122,7 @@ const Cart = () => {
                             {coupon && (
                                 <div className="flex justify-between text-green-500">
                                     <span>Discount ({coupon.code})</span>
-                                    <span>-${((subtotal * coupon.discount) / 100).toFixed(2)}</span>
+                                    <span>-${coupon.type === 'flat' ? coupon.discount.toFixed(2) : ((subtotal * coupon.discount) / 100).toFixed(2)}</span>
                                 </div>
                             )}
                             <div className="pt-4 border-t border-gray-200 flex justify-between text-xl font-bold text-primary">
@@ -152,7 +156,9 @@ const Cart = () => {
                                     <Tag className="text-green-600" size={18} />
                                     <div>
                                         <p className="text-xs font-bold text-green-800">{coupon.code} Applied</p>
-                                        <p className="text-[10px] text-green-600">{coupon.discount}% discount</p>
+                                        <p className="text-[10px] text-green-600">
+                                            {coupon.type === 'flat' ? `$${coupon.discount}` : `${coupon.discount}%`} discount
+                                        </p>
                                     </div>
                                 </div>
                                 <button onClick={removeCoupon} className="p-1 hover:bg-green-100 rounded-full text-green-800">

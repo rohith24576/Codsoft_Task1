@@ -24,9 +24,8 @@ const Footer = () => {
                         <h4 className="text-sm font-bold uppercase tracking-wider text-primary mb-6">Shop</h4>
                         <ul className="space-y-4">
                             <li><Link to="/shop" className="text-secondary text-sm hover:text-primary transition-colors">All Products</Link></li>
-                            <li><Link to="/shop?category=new" className="text-secondary text-sm hover:text-primary transition-colors">New Arrivals</Link></li>
-                            <li><Link to="/shop?category=featured" className="text-secondary text-sm hover:text-primary transition-colors">Featured</Link></li>
-                            <li><Link to="/shop?category=sale" className="text-secondary text-sm hover:text-primary transition-colors">On Sale</Link></li>
+                            <li><Link to="/about" className="text-secondary text-sm hover:text-primary transition-colors">Our Story</Link></li>
+                            <li><Link to="/sustainability" className="text-secondary text-sm hover:text-primary transition-colors">Sustainability</Link></li>
                         </ul>
                     </div>
 

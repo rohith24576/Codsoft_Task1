@@ -24,11 +24,22 @@ const deleteCoupon = asyncHandler(async (req, res) => {
 
 const validateCoupon = asyncHandler(async (req, res) => {
     const { code } = req.body;
-    const coupon = await Coupon.findOne({ code: code.toUpperCase(), isActive: true });
-
-    if (!coupon) {
-        throw new ApiError(404, "Invalid coupon code");
+    
+    if (process.env.USE_MOCK_DB === 'true') {
+        if (code?.toUpperCase() === 'VIP500') {
+            return res.status(200).json(new ApiResponse(200, {
+                _id: "mock_coupon_vip",
+                code: "VIP500",
+                discount: 25,
+                type: 'percentage',
+                expiryDate: "2030-01-01",
+                isActive: true
+            }, "VIP Coupon validated successfully!"));
+        }
+        throw new ApiError(404, "Invalid coupon code (Mock Mode)");
     }
+
+    const coupon = await Coupon.findOne({ code: code.toUpperCase(), isActive: true });
 
     if (new Date(coupon.expiryDate) < new Date()) {
         throw new ApiError(400, "Coupon has expired");

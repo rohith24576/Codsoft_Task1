@@ -12,7 +12,15 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const success = await login(formData);
-        if (success) navigate('/');
+        if (success) {
+            // Re-check state to get the newly logged in user
+            const currentUser = useAuthStore.getState().user;
+            if (currentUser?.role === 'ADMIN') {
+                navigate('/admin');
+            } else {
+                navigate('/');
+            }
+        }
     };
 
     return (

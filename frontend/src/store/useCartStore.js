@@ -55,7 +55,11 @@ export const useCartStore = create(
                 const subtotal = get().cart.reduce((acc, item) => acc + item.price * item.qty, 0);
                 let total = subtotal;
                 if (get().coupon) {
-                    total = subtotal - (subtotal * get().coupon.discount) / 100;
+                    if (get().coupon.type === 'flat') {
+                        total = Math.max(0, subtotal - get().coupon.discount);
+                    } else {
+                        total = subtotal - (subtotal * get().coupon.discount) / 100;
+                    }
                 }
                 return { subtotal, total };
             }

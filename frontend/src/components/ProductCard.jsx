@@ -3,10 +3,11 @@ import { Link } from 'react-router-dom';
 import { ShoppingCart, Heart, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useCartStore } from '../store/useCartStore';
-
 import { useWishlistStore } from '../store/useWishlistStore';
+import { useAuthStore } from '../store/useAuthStore';
 
 const ProductCard = ({ product }) => {
+    const { user } = useAuthStore();
     const { addToCart } = useCartStore();
     const { addToWishlist, isInWishlist } = useWishlistStore();
     const isFavorite = isInWishlist(product._id);
@@ -28,21 +29,23 @@ const ProductCard = ({ product }) => {
                     />
                 </Link>
                 
-                {/* Overlay Actions */}
-                <div className="absolute top-4 right-4 flex flex-col space-y-2 translate-x-12 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300">
-                    <button 
-                        onClick={() => addToWishlist(product)}
-                        className={`p-3 rounded-full shadow-soft transition-colors ${isFavorite ? 'bg-primary text-white' : 'bg-white text-primary hover:bg-primary hover:text-white'}`}
-                    >
-                        <Heart size={18} fill={isFavorite ? "currentColor" : "none"} />
-                    </button>
-                    <button 
-                        onClick={() => addToCart(product)}
-                        className="p-3 bg-white text-primary rounded-full shadow-soft hover:bg-primary hover:text-white transition-colors"
-                    >
-                        <ShoppingCart size={18} />
-                    </button>
-                </div>
+                {/* Overlay Actions - Hidden for Admin */}
+                {user?.role !== 'ADMIN' && (
+                    <div className="absolute top-4 right-4 flex flex-col space-y-2 translate-x-12 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300">
+                        <button 
+                            onClick={() => addToWishlist(product)}
+                            className={`p-3 rounded-full shadow-soft transition-colors ${isFavorite ? 'bg-primary text-white' : 'bg-white text-primary hover:bg-primary hover:text-white'}`}
+                        >
+                            <Heart size={18} fill={isFavorite ? "currentColor" : "none"} />
+                        </button>
+                        <button 
+                            onClick={() => addToCart(product)}
+                            className="p-3 bg-white text-primary rounded-full shadow-soft hover:bg-primary hover:text-white transition-colors"
+                        >
+                            <ShoppingCart size={18} />
+                        </button>
+                    </div>
+                )}
 
                 {/* Badge */}
                 {product.discountPrice > 0 && (

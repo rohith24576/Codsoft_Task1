@@ -13,12 +13,14 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
 
         // MOCK DB LOGIC
         if (process.env.USE_MOCK_DB === "true" && (token === "mock_access_token_jwt" || token.startsWith("mock_"))) {
+            // For mock testing, we'll assume a token starting with 'mock_admin' is an admin
+            const isAdminToken = token.includes("admin");
             req.user = {
-                _id: "mock_user_123",
-                fullName: "Demo User",
-                username: "demo_user",
-                email: "demo@example.com",
-                role: "ADMIN" // Giving admin rights for easy testing
+                _id: isAdminToken ? "admin_user_999" : "mock_user_123",
+                fullName: isAdminToken ? "System Admin" : "Demo User",
+                username: isAdminToken ? "admin" : "demo_user",
+                email: isAdminToken ? "admin@gmail.com" : "demo@example.com",
+                role: isAdminToken ? "ADMIN" : "USER"
             };
             return next();
         }

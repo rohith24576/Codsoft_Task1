@@ -10,6 +10,8 @@ export const useProductStore = create((set, get) => ({
     categories: [],
     loading: false,
     product: null,
+    relatedProducts: [],
+    recentlyViewed: [],
 
     fetchProducts: async (params = {}) => {
         set({ loading: true });
@@ -70,6 +72,21 @@ export const useProductStore = create((set, get) => ({
             toast.error(error.response?.data?.message || 'Failed to create product');
             set({ loading: false });
             return false;
+        }
+    },
+
+    deleteProduct: async (id) => {
+        try {
+            const token = localStorage.getItem('accessToken');
+            await axios.delete(`${API_URL}/products/${id}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            set(state => ({
+                products: state.products.filter(p => p._id !== id)
+            }));
+            toast.success('Product removed successfully');
+        } catch (error) {
+            toast.error('Failed to delete product');
         }
     }
 }));
