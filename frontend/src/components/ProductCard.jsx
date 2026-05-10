@@ -68,7 +68,11 @@ const ProductCard = ({ product }) => {
                     </div>
                     <div className="flex items-center space-x-1">
                         <Star size={12} className="text-yellow-400 fill-yellow-400" />
-                        <span className="text-xs font-medium text-secondary">{product.ratings}</span>
+                        <span className="text-xs font-medium text-secondary">
+                            {product.reviews?.length > 0 
+                                ? (product.reviews.reduce((acc, item) => acc + item.rating, 0) / product.reviews.length).toFixed(1)
+                                : 0}
+                        </span>
                     </div>
                 </div>
 

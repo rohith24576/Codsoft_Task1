@@ -103,12 +103,23 @@ const ProductDetails = () => {
                         <h1 className="text-4xl md:text-5xl font-bold text-primary mb-4 leading-tight tracking-tight">{product.name}</h1>
                         <div className="flex items-center space-x-4">
                             <div className="flex items-center space-x-1">
-                                {[...Array(5)].map((_, i) => (
-                                    <Star key={i} size={16} className={i < Math.floor(product.ratings) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-200'} />
-                                ))}
-                                <span className="text-sm font-bold ml-2 text-primary">{product.ratings}</span>
+                                {(() => {
+                                    const totalReviews = product.reviews?.length || 0;
+                                    const averageRating = totalReviews > 0 
+                                        ? (product.reviews.reduce((acc, item) => acc + item.rating, 0) / totalReviews).toFixed(1)
+                                        : 0;
+                                    
+                                    return (
+                                        <>
+                                            {[...Array(5)].map((_, i) => (
+                                                <Star key={i} size={16} className={i < Math.floor(averageRating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-200'} />
+                                            ))}
+                                            <span className="text-sm font-bold ml-2 text-primary">{averageRating}</span>
+                                        </>
+                                    );
+                                })()}
                             </div>
-                            <span className="text-xs font-bold text-secondary border-l border-gray-100 pl-4 uppercase tracking-widest">{product.numReviews} Reviews</span>
+                            <span className="text-xs font-bold text-secondary border-l border-gray-100 pl-4 uppercase tracking-widest">{product.reviews?.length || 0} Reviews</span>
                         </div>
                     </div>
 
@@ -227,7 +238,7 @@ const ProductDetails = () => {
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
                                     <div>
                                         <h3 className="text-2xl font-bold text-primary mb-2">Customer Feedback</h3>
-                                        <p className="text-sm text-secondary font-medium">Based on {product.numReviews} verified purchases</p>
+                                        <p className="text-sm text-secondary font-medium">Based on {product.reviews?.length || 0} verified purchases</p>
                                     </div>
                                     {user ? (
                                         user.role !== 'ADMIN' ? (

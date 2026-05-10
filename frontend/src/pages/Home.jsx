@@ -51,7 +51,7 @@ const Home = () => {
                         <div className="flex items-center space-x-4 mb-10">
                             <span className="w-12 h-[1px] bg-white/30"></span>
                             <span className="text-[10px] font-bold tracking-[0.5em] text-white/80 uppercase">
-                                Curated Excellence 2026
+                                THE 2026 COLLECTION
                             </span>
                         </div>
                             
