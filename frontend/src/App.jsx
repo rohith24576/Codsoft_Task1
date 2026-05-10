@@ -22,6 +22,7 @@ import ScrollToTop from './components/ScrollToTop';
 import ChatWidget from './components/ChatWidget';
 import { useAuthStore } from './store/useAuthStore';
 import Skeleton from './components/Skeleton';
+import SizeChart from './pages/SizeChart';
 
 // Protected Route Component
 const ProtectedRoute = ({ children, isAdmin = false }) => {
@@ -68,7 +69,7 @@ function AppContent() {
                     <Route path="/shipping" element={<InfoPage />} />
                     <Route path="/returns" element={<Returns />} />
                     <Route path="/about" element={<InfoPage />} />
-                    <Route path="/sustainability" element={<InfoPage />} />
+                    <Route path="/size-chart" element={<SizeChart />} />
                     <Route path="/contact" element={<InfoPage />} />
                     <Route path="/privacy" element={<InfoPage />} />
                     <Route path="/terms" element={<InfoPage />} />
