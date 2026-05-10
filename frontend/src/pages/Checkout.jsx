@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useCartStore } from '../store/useCartStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { MapPin, CreditCard, ShieldCheck, ArrowLeft, Loader2, CheckCircle, Download } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { MapPin, CreditCard, ShieldCheck, ArrowLeft, Loader2, CheckCircle, Download, ChevronDown, Smartphone, Wallet, QrCode, Banknote } from 'lucide-react';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import { jsPDF } from 'jspdf';
@@ -20,14 +20,37 @@ const Checkout = () => {
     const [address, setAddress] = useState({
         street: '',
         city: '',
-        postalCode: '',
+        state: '',
+        zipCode: '',
         country: 'USA'
     });
+    
+    const [paymentMethod, setPaymentMethod] = useState('Credit Card');
+    
+    const [selectedAddressId, setSelectedAddressId] = useState(
+        user?.addresses?.length > 0 ? (user.addresses.find(a => a.isDefault)?._id || user.addresses[0]._id) : 'new'
+    );
+    const [isAddressDropdownOpen, setIsAddressDropdownOpen] = useState(false);
 
     const handlePlaceOrder = async (e) => {
         e.preventDefault();
         setLoading(true);
         
+        let finalAddress = null;
+        
+        if (selectedAddressId !== 'new') {
+            finalAddress = user.addresses.find(a => a._id === selectedAddressId);
+        } else {
+            finalAddress = address;
+            // Auto-save new address to profile
+            if (user) {
+                useAuthStore.getState().addAddress({
+                    ...address,
+                    isDefault: !user.addresses || user.addresses.length === 0
+                });
+            }
+        }
+
         const token = localStorage.getItem('accessToken');
         const orderData = {
             orderItems: cart.map(item => ({
@@ -38,12 +61,12 @@ const Checkout = () => {
                 product: item._id
             })),
             shippingAddress: {
-                address: address.street,
-                city: address.city,
-                postalCode: address.postalCode,
-                country: address.country
+                address: finalAddress.street,
+                city: finalAddress.city,
+                postalCode: finalAddress.zipCode,
+                country: finalAddress.country
             },
-            paymentMethod: 'Credit Card',
+            paymentMethod: paymentMethod,
             itemsPrice: subtotal,
             taxPrice: 0,
             shippingPrice: 0,
@@ -164,48 +187,158 @@ const Checkout = () => {
                 <div>
                     <h2 className="text-3xl font-bold text-primary mb-10">Shipping Details</h2>
                     <form onSubmit={handlePlaceOrder} className="space-y-8">
-                        <div className="space-y-6">
-                            <div className="relative">
-                                <MapPin className="absolute left-4 top-4 text-gray-400" size={18} />
-                                <input 
-                                    type="text" 
-                                    placeholder="Street Address" 
-                                    required
-                                    value={address.street}
-                                    onChange={(e) => setAddress({...address, street: e.target.value})}
-                                    className="input-field pl-12 py-4"
-                                />
-                            </div>
-                            <div className="grid grid-cols-2 gap-6">
-                                <input 
-                                    type="text" 
-                                    placeholder="City" 
-                                    required
-                                    value={address.city}
-                                    onChange={(e) => setAddress({...address, city: e.target.value})}
-                                    className="input-field py-4"
-                                />
-                                <input 
-                                    type="text" 
-                                    placeholder="Postal Code" 
-                                    required
-                                    value={address.postalCode}
-                                    onChange={(e) => setAddress({...address, postalCode: e.target.value})}
-                                    className="input-field py-4"
-                                />
-                            </div>
-                        </div>
+                        {user?.addresses && user.addresses.length > 0 && (
+                            <div className="space-y-4">
+                                <label className="text-sm font-bold text-secondary">Select Saved Address</label>
+                                <div className="relative z-40">
+                                    <div 
+                                        onClick={() => setIsAddressDropdownOpen(!isAddressDropdownOpen)}
+                                        className="input-field py-4 cursor-pointer flex items-center justify-between"
+                                    >
+                                        <span className="truncate pr-4 text-primary font-bold">
+                                            {selectedAddressId === 'new' ? '+ Enter New Address' : (() => {
+                                                const a = user.addresses.find(addr => addr._id === selectedAddressId);
+                                                return a ? `${a.street}, ${a.city}, ${a.state} ${a.zipCode} ${a.isDefault ? '(Default)' : ''}` : '';
+                                            })()}
+                                        </span>
+                                        <ChevronDown className={`text-gray-400 transition-transform ${isAddressDropdownOpen ? 'rotate-180' : ''}`} size={20} />
+                                    </div>
 
-                        <h2 className="text-3xl font-bold text-primary mb-10 pt-10">Payment Method</h2>
-                        <div className="p-6 border-2 border-primary rounded-3xl flex items-center justify-between">
-                            <div className="flex items-center space-x-4">
-                                <CreditCard className="text-primary" size={24} />
-                                <div>
-                                    <p className="font-bold text-primary">Credit / Debit Card</p>
-                                    <p className="text-xs text-secondary">Pay securely with Stripe</p>
+                                    <AnimatePresence>
+                                        {isAddressDropdownOpen && (
+                                            <motion.div 
+                                                initial={{ opacity: 0, y: -10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, y: -10 }}
+                                                className="absolute w-full mt-2 bg-[#F9F9F9] border border-gray-200 rounded-2xl shadow-premium overflow-hidden"
+                                            >
+                                                {user.addresses.map(addr => (
+                                                    <div 
+                                                        key={addr._id}
+                                                        onClick={() => { setSelectedAddressId(addr._id); setIsAddressDropdownOpen(false); }}
+                                                        className={`px-6 py-4 cursor-pointer hover:bg-white hover:text-primary transition-colors ${selectedAddressId === addr._id ? 'bg-primary/5 font-bold text-primary' : 'text-secondary font-medium'}`}
+                                                    >
+                                                        {addr.street}, {addr.city}, {addr.state} {addr.zipCode} 
+                                                        {addr.isDefault && <span className="text-green-500 text-[10px] ml-2 uppercase tracking-widest font-bold bg-green-50 px-2 py-0.5 rounded-md">Default</span>}
+                                                    </div>
+                                                ))}
+                                                <div 
+                                                    onClick={() => { setSelectedAddressId('new'); setIsAddressDropdownOpen(false); }}
+                                                    className={`px-6 py-4 cursor-pointer hover:bg-white hover:text-primary transition-colors border-t border-gray-200 ${selectedAddressId === 'new' ? 'bg-primary/5 font-bold text-primary' : 'text-primary font-bold'}`}
+                                                >
+                                                    + Enter New Address
+                                                </div>
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
                                 </div>
                             </div>
-                            <div className="w-5 h-5 rounded-full border-4 border-primary"></div>
+                        )}
+
+                        {selectedAddressId === 'new' && (
+                            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="space-y-6">
+                                <div className="relative">
+                                    <MapPin className="absolute left-4 top-4 text-gray-400" size={18} />
+                                    <input 
+                                        type="text" 
+                                        placeholder="Street Address" 
+                                        required
+                                        value={address.street}
+                                        onChange={(e) => setAddress({...address, street: e.target.value})}
+                                        className="input-field pl-12 py-4"
+                                    />
+                                </div>
+                                <div className="grid grid-cols-2 gap-6">
+                                    <input 
+                                        type="text" 
+                                        placeholder="City" 
+                                        required
+                                        value={address.city}
+                                        onChange={(e) => setAddress({...address, city: e.target.value})}
+                                        className="input-field py-4"
+                                    />
+                                    <input 
+                                        type="text" 
+                                        placeholder="State" 
+                                        required
+                                        value={address.state}
+                                        onChange={(e) => setAddress({...address, state: e.target.value})}
+                                        className="input-field py-4"
+                                    />
+                                </div>
+                                <div className="grid grid-cols-2 gap-6">
+                                    <input 
+                                        type="text" 
+                                        placeholder="ZIP Code" 
+                                        required
+                                        value={address.zipCode}
+                                        onChange={(e) => setAddress({...address, zipCode: e.target.value})}
+                                        className="input-field py-4"
+                                    />
+                                    <input 
+                                        type="text" 
+                                        placeholder="Country" 
+                                        required
+                                        value={address.country}
+                                        onChange={(e) => setAddress({...address, country: e.target.value})}
+                                        className="input-field py-4"
+                                    />
+                                </div>
+                            </motion.div>
+                        )}
+
+                        <h2 className="text-3xl font-bold text-primary mb-10 pt-10">Payment Method</h2>
+                        <div className="space-y-4">
+                            {/* Option 1 */}
+                            <div 
+                                onClick={() => setPaymentMethod('Credit Card')}
+                                className={`p-6 border-2 rounded-3xl flex items-center justify-between cursor-pointer transition-all duration-300 ${paymentMethod === 'Credit Card' ? 'border-primary bg-primary/5' : 'border-gray-100 hover:border-gray-300 bg-white'}`}
+                            >
+                                <div className="flex items-center space-x-4">
+                                    <div className={`p-3 rounded-xl ${paymentMethod === 'Credit Card' ? 'bg-primary text-white' : 'bg-gray-50 text-secondary'}`}>
+                                        <CreditCard size={20} />
+                                    </div>
+                                    <div>
+                                        <p className={`font-bold ${paymentMethod === 'Credit Card' ? 'text-primary' : 'text-secondary'}`}>Credit / Debit Card</p>
+                                        <p className="text-xs text-gray-400">Pay securely with Stripe</p>
+                                    </div>
+                                </div>
+                                <div className={`w-5 h-5 rounded-full border-4 ${paymentMethod === 'Credit Card' ? 'border-primary' : 'border-gray-200'}`}></div>
+                            </div>
+
+                            {/* Option 2 */}
+                            <div 
+                                onClick={() => setPaymentMethod('UPI')}
+                                className={`p-6 border-2 rounded-3xl flex items-center justify-between cursor-pointer transition-all duration-300 ${paymentMethod === 'UPI' ? 'border-primary bg-primary/5' : 'border-gray-100 hover:border-gray-300 bg-white'}`}
+                            >
+                                <div className="flex items-center space-x-4">
+                                    <div className={`p-3 rounded-xl ${paymentMethod === 'UPI' ? 'bg-purple-500 text-white' : 'bg-gray-50 text-secondary'}`}>
+                                        <QrCode size={20} />
+                                    </div>
+                                    <div>
+                                        <p className={`font-bold ${paymentMethod === 'UPI' ? 'text-primary' : 'text-secondary'}`}>UPI (GPay, PhonePe, Paytm)</p>
+                                        <p className="text-xs text-gray-400">Scan & Pay securely</p>
+                                    </div>
+                                </div>
+                                <div className={`w-5 h-5 rounded-full border-4 ${paymentMethod === 'UPI' ? 'border-primary' : 'border-gray-200'}`}></div>
+                            </div>
+
+                            {/* Option 3 */}
+                            <div 
+                                onClick={() => setPaymentMethod('Cash on Delivery')}
+                                className={`p-6 border-2 rounded-3xl flex items-center justify-between cursor-pointer transition-all duration-300 ${paymentMethod === 'Cash on Delivery' ? 'border-primary bg-primary/5' : 'border-gray-100 hover:border-gray-300 bg-white'}`}
+                            >
+                                <div className="flex items-center space-x-4">
+                                    <div className={`p-3 rounded-xl ${paymentMethod === 'Cash on Delivery' ? 'bg-green-500 text-white' : 'bg-gray-50 text-secondary'}`}>
+                                        <Banknote size={20} />
+                                    </div>
+                                    <div>
+                                        <p className={`font-bold ${paymentMethod === 'Cash on Delivery' ? 'text-primary' : 'text-secondary'}`}>Cash on Delivery</p>
+                                        <p className="text-xs text-gray-400">Pay when your order arrives</p>
+                                    </div>
+                                </div>
+                                <div className={`w-5 h-5 rounded-full border-4 ${paymentMethod === 'Cash on Delivery' ? 'border-primary' : 'border-gray-200'}`}></div>
+                            </div>
                         </div>
 
                         <button 

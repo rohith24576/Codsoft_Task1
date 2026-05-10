@@ -4,7 +4,7 @@ import { Product } from "../models/product.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
-const mockProducts = [
+export const mockProducts = [
     // MEN (7 Products)
     { 
         _id: 'm1', name: 'Premium Cotton Tee', price: 45, images: ['https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=800'], 

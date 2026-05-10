@@ -10,6 +10,7 @@ const Shop = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const { products, fetchProducts, loading, categories, fetchCategories } = useProductStore();
     const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
     
     // Form States
     const [minPrice, setMinPrice] = useState(searchParams.get('minPrice') || '');
@@ -26,9 +27,17 @@ const Shop = () => {
         fetchCategories();
     }, [search, category, sort, currentMin, currentMax, fetchProducts, fetchCategories]);
 
-    const handleSortChange = (e) => {
-        setSearchParams({ ...Object.fromEntries(searchParams), sort: e.target.value });
+    const handleSortChange = (value) => {
+        setSearchParams({ ...Object.fromEntries(searchParams), sort: value });
+        setIsSortDropdownOpen(false);
     };
+
+    const sortOptions = [
+        { value: 'createdAt:desc', label: 'Latest Arrivals' },
+        { value: 'price:asc', label: 'Price: Low to High' },
+        { value: 'price:desc', label: 'Price: High to Low' },
+        { value: 'ratings:desc', label: 'Top Rated' }
+    ];
 
     const applyFilters = () => {
         const params = Object.fromEntries(searchParams);
@@ -77,18 +86,37 @@ const Shop = () => {
                         <span>Filters</span>
                     </button>
 
-                    <div className="relative flex-grow md:flex-grow-0">
-                        <select 
-                            value={sort}
-                            onChange={handleSortChange}
-                            className="appearance-none w-full md:w-48 px-5 py-2.5 border border-gray-200 rounded-full text-sm font-medium focus:outline-none focus:border-primary transition-colors bg-white pr-10"
+                    <div className="relative flex-grow md:flex-grow-0 z-40">
+                        <div 
+                            onClick={() => setIsSortDropdownOpen(!isSortDropdownOpen)}
+                            className="flex items-center justify-between w-full md:w-48 px-5 py-2.5 border border-gray-200 rounded-full text-sm font-medium hover:border-primary transition-colors bg-white cursor-pointer"
                         >
-                            <option value="createdAt:desc">Latest Arrivals</option>
-                            <option value="price:asc">Price: Low to High</option>
-                            <option value="price:desc">Price: High to Low</option>
-                            <option value="ratings:desc">Top Rated</option>
-                        </select>
-                        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-secondary pointer-events-none" size={16} />
+                            <span className="truncate pr-2">
+                                {sortOptions.find(opt => opt.value === sort)?.label || 'Latest Arrivals'}
+                            </span>
+                            <ChevronDown className={`text-secondary transition-transform ${isSortDropdownOpen ? 'rotate-180' : ''}`} size={16} />
+                        </div>
+
+                        <AnimatePresence>
+                            {isSortDropdownOpen && (
+                                <motion.div 
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    className="absolute right-0 w-full md:w-48 mt-2 bg-white border border-gray-100 rounded-2xl shadow-premium overflow-hidden"
+                                >
+                                    {sortOptions.map(option => (
+                                        <div 
+                                            key={option.value}
+                                            onClick={() => handleSortChange(option.value)}
+                                            className={`px-5 py-3 cursor-pointer text-sm transition-colors hover:bg-gray-50 ${sort === option.value ? 'bg-primary/5 text-primary font-bold' : 'text-secondary font-medium'}`}
+                                        >
+                                            {option.label}
+                                        </div>
+                                    ))}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </div>
                 </div>
             </div>

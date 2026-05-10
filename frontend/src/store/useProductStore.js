@@ -46,8 +46,34 @@ export const useProductStore = create((set, get) => ({
         set({ loading: true });
         try {
             const response = await axios.get(`${API_URL}/products/${id}`);
-            set({ product: response.data.data, loading: false });
-            return response.data.data;
+            const fetchedProduct = response.data.data;
+            set({ product: fetchedProduct, loading: false });
+            
+            // Add to recently viewed
+            set((state) => {
+                const exists = state.recentlyViewed.find(p => p._id === fetchedProduct._id);
+                if (exists) {
+                    // Move to front
+                    const filtered = state.recentlyViewed.filter(p => p._id !== fetchedProduct._id);
+                    return { recentlyViewed: [fetchedProduct, ...filtered].slice(0, 5) };
+                }
+                return { recentlyViewed: [fetchedProduct, ...state.recentlyViewed].slice(0, 5) };
+            });
+
+            // Fetch related products (same category, exclude current)
+            if (fetchedProduct.category?._id) {
+                try {
+                    const relatedRes = await axios.get(`${API_URL}/products?category=${fetchedProduct.category._id}`);
+                    const related = relatedRes.data.data.products
+                        .filter(p => p._id !== fetchedProduct._id)
+                        .slice(0, 4);
+                    set({ relatedProducts: related });
+                } catch (error) {
+                    console.error('Failed to fetch related products', error);
+                }
+            }
+
+            return fetchedProduct;
         } catch (error) {
             toast.error('Product not found');
             set({ loading: false });

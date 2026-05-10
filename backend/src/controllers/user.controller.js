@@ -343,6 +343,47 @@ const addToRecentlyViewed = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, user.recentlyViewed, "Recently viewed updated"));
 });
 
+const addAddress = asyncHandler(async (req, res) => {
+    const { street, city, state, zipCode, country, isDefault } = req.body;
+    
+    // MOCK DB LOGIC
+    if (process.env.USE_MOCK_DB === "true") {
+        const mockAddress = { 
+            _id: "mock_address_" + Date.now(), 
+            street, city, state, zipCode, country, 
+            isDefault: isDefault || true 
+        };
+        // Return an array representing the user's addresses
+        return res.status(200).json(new ApiResponse(200, [mockAddress], "Address added successfully (Mock Mode)"));
+    }
+
+    const user = await User.findById(req.user._id);
+    
+    if (isDefault) {
+        user.addresses.forEach(addr => addr.isDefault = false);
+    }
+    
+    user.addresses.push({ street, city, state, zipCode, country, isDefault: isDefault || user.addresses.length === 0 });
+    await user.save({ validateBeforeSave: false });
+    
+    return res.status(200).json(new ApiResponse(200, user.addresses, "Address added successfully"));
+});
+
+const removeAddress = asyncHandler(async (req, res) => {
+    const { addressId } = req.params;
+    
+    // MOCK DB LOGIC
+    if (process.env.USE_MOCK_DB === "true") {
+        return res.status(200).json(new ApiResponse(200, [], "Address removed successfully (Mock Mode)"));
+    }
+
+    const user = await User.findById(req.user._id);
+    user.addresses = user.addresses.filter(addr => addr._id.toString() !== addressId);
+    
+    await user.save({ validateBeforeSave: false });
+    return res.status(200).json(new ApiResponse(200, user.addresses, "Address removed successfully"));
+});
+
 export {
     registerUser,
     loginUser,
@@ -356,5 +397,7 @@ export {
     addToWishlist,
     removeFromWishlist,
     getRecentlyViewed,
-    addToRecentlyViewed
+    addToRecentlyViewed,
+    addAddress,
+    removeAddress
 };

@@ -82,5 +82,37 @@ export const useAuthStore = create((set, get) => ({
             user: state.user ? { ...state.user, ...updatedData } : null
         }));
         toast.success('Profile updated successfully! ✨');
+    },
+
+    addAddress: async (addressData) => {
+        try {
+            const token = get().accessToken;
+            const response = await axios.post(`${API_URL}/users/address`, addressData, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            set(state => ({
+                user: state.user ? { ...state.user, addresses: response.data.data } : null
+            }));
+            toast.success('Address saved successfully');
+            return true;
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to save address');
+            return false;
+        }
+    },
+
+    removeAddress: async (addressId) => {
+        try {
+            const token = get().accessToken;
+            const response = await axios.delete(`${API_URL}/users/address/${addressId}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            set(state => ({
+                user: state.user ? { ...state.user, addresses: response.data.data } : null
+            }));
+            toast.success('Address removed');
+        } catch (error) {
+            toast.error('Failed to remove address');
+        }
     }
 }));

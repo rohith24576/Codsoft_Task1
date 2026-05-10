@@ -12,7 +12,9 @@ import {
     addToWishlist,
     removeFromWishlist,
     getRecentlyViewed,
-    addToRecentlyViewed
+    addToRecentlyViewed,
+    addAddress,
+    removeAddress
 } from "../controllers/user.controller.js";
 import { verifyJWT } from "../middleware/auth.middleware.js";
 import { upload } from "../middleware/multer.middleware.js";
@@ -36,5 +38,8 @@ router.route("/wishlist/:productId").post(verifyJWT, addToWishlist).delete(verif
 
 router.route("/recently-viewed").get(verifyJWT, getRecentlyViewed);
 router.route("/recently-viewed/:productId").post(verifyJWT, addToRecentlyViewed);
+
+router.route("/address").post(verifyJWT, addAddress);
+router.route("/address/:addressId").delete(verifyJWT, removeAddress);
 
 export default router;

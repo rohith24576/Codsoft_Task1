@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useProductStore } from '../store/useProductStore';
 import { useCartStore } from '../store/useCartStore';
 import { useAuthStore } from '../store/useAuthStore';
-import { Star, ShoppingCart, Heart, Truck, ShieldCheck, ArrowLeft, Plus, Minus, Settings, X, Send, CheckCircle2 } from 'lucide-react';
+import { Star, ShoppingCart, Heart, Truck, ShieldCheck, ArrowLeft, Plus, Minus, Settings, X, Send, CheckCircle2, Search, Clock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Skeleton from '../components/Skeleton';
 import ProductCard from '../components/ProductCard';
@@ -24,6 +24,59 @@ const ProductDetails = () => {
     const [reviewRating, setReviewRating] = useState(5);
     const [reviewComment, setReviewComment] = useState('');
     const [hoverRating, setHoverRating] = useState(0);
+
+    // Zoom States
+    const [zoomStyle, setZoomStyle] = useState({ transform: 'scale(1)', transformOrigin: 'center center' });
+    const [isZooming, setIsZooming] = useState(false);
+
+    const handleMouseMove = (e) => {
+        const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+        const x = ((e.clientX - left) / width) * 100;
+        const y = ((e.clientY - top) / height) * 100;
+        setZoomStyle({
+            transformOrigin: `${x}% ${y}%`,
+            transform: 'scale(2.5)' // Zoom level
+        });
+    };
+
+    const handleMouseEnter = () => setIsZooming(true);
+    
+    const handleMouseLeave = () => {
+        setIsZooming(false);
+        setZoomStyle({
+            transformOrigin: 'center center',
+            transform: 'scale(1)'
+        });
+    };
+
+    // Dynamic Delivery Estimate Logic
+    const [deliveryEstimate, setDeliveryEstimate] = useState('');
+    const [countdown, setCountdown] = useState('');
+
+    useEffect(() => {
+        const updateTimer = () => {
+            const now = new Date();
+            const cutoffHour = 16; // 4 PM cutoff
+            let deliveryDate = new Date();
+            deliveryDate.setDate(now.getDate() + 4); // 4 days shipping
+            
+            let hoursLeft = cutoffHour - now.getHours() - 1;
+            let minutesLeft = 59 - now.getMinutes();
+            
+            if (hoursLeft < 0) {
+                // If past cutoff, add a day and pretend it's for tomorrow's cutoff
+                deliveryDate.setDate(deliveryDate.getDate() + 1);
+                hoursLeft = (24 - now.getHours()) + cutoffHour - 1;
+            }
+            
+            setCountdown(`${hoursLeft} hrs ${minutesLeft} mins`);
+            setDeliveryEstimate(deliveryDate.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }));
+        };
+
+        updateTimer();
+        const interval = setInterval(updateTimer, 60000);
+        return () => clearInterval(interval);
+    }, []);
 
     useEffect(() => {
         fetchProductById(id);
@@ -75,13 +128,24 @@ const ProductDetails = () => {
                     <motion.div 
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="aspect-square rounded-[2.5rem] overflow-hidden bg-gray-50 border border-gray-100 group"
+                        className="aspect-square rounded-[2.5rem] overflow-hidden bg-gray-50 border border-gray-100 relative cursor-crosshair"
+                        onMouseMove={handleMouseMove}
+                        onMouseEnter={handleMouseEnter}
+                        onMouseLeave={handleMouseLeave}
                     >
                         <img 
                             src={product.images[selectedImage]} 
                             alt={product.name} 
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 cursor-zoom-in"
+                            style={zoomStyle}
+                            className={`w-full h-full object-cover transition-transform ${isZooming ? 'duration-0' : 'duration-500'}`}
                         />
+                        {/* Custom Magnifier Icon Overlay */}
+                        <div className={`absolute bottom-6 right-6 bg-white/90 backdrop-blur-md px-4 py-3 rounded-2xl shadow-xl pointer-events-none transition-opacity duration-300 ${isZooming ? 'opacity-0' : 'opacity-100'}`}>
+                            <div className="flex items-center space-x-2 text-primary font-bold text-[10px] uppercase tracking-widest">
+                                <Search size={14} />
+                                <span>Hover to Zoom</span>
+                            </div>
+                        </div>
                     </motion.div>
                     <div className="grid grid-cols-5 gap-4">
                         {product.images.map((img, i) => (
@@ -145,26 +209,37 @@ const ProductDetails = () => {
                     </p>
 
                     {user?.role !== 'ADMIN' ? (
-                        <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-10">
-                            <div className="flex items-center bg-gray-50 rounded-2xl px-6 py-4 border border-gray-100">
-                                <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="p-1 hover:text-primary transition-colors">
+                        <div className="grid grid-cols-1 md:grid-cols-[auto_1fr_auto] gap-4 mb-10">
+                            {/* Quantity Selector */}
+                            <div className="flex items-center justify-between bg-gray-50 rounded-2xl px-6 py-4 border border-gray-100 min-w-[150px] w-full md:w-auto">
+                                <button 
+                                    onClick={() => setQuantity(q => Math.max(1, q - 1))} 
+                                    className="p-1 hover:text-primary transition-colors hover:bg-white rounded-lg"
+                                >
                                     <Minus size={18} />
                                 </button>
-                                <span className="w-12 text-center font-bold text-primary">{quantity}</span>
-                                <button onClick={() => setQuantity(q => Math.min(product.stock, q + 1))} className="p-1 hover:text-primary transition-colors">
+                                <span className="w-12 text-center font-bold text-primary text-lg">{quantity}</span>
+                                <button 
+                                    onClick={() => setQuantity(q => Math.min(product.stock, q + 1))} 
+                                    className="p-1 hover:text-primary transition-colors hover:bg-white rounded-lg"
+                                >
                                     <Plus size={18} />
                                 </button>
                             </div>
+
+                            {/* Add to Cart Button */}
                             <button 
                                 disabled={product.stock === 0}
                                 onClick={() => addToCart(product, quantity)}
-                                className="w-full flex-grow btn-primary flex items-center justify-center space-x-3 py-5 rounded-2xl shadow-xl hover:shadow-primary/20"
+                                className="w-full btn-primary flex items-center justify-center space-x-3 py-5 rounded-2xl shadow-xl hover:shadow-primary/20 transition-all active:scale-[0.98] disabled:opacity-50"
                             >
                                 <ShoppingCart size={20} />
-                                <span className="font-bold uppercase tracking-widest text-xs">Add to Cart</span>
+                                <span className="font-bold uppercase tracking-widest text-xs whitespace-nowrap">Add to Cart</span>
                             </button>
-                            <button className="p-5 border border-gray-100 rounded-2xl hover:border-primary hover:bg-primary/5 transition-all group">
-                                <Heart size={20} className="text-gray-400 group-hover:text-primary" />
+
+                            {/* Wishlist Button */}
+                            <button className="p-5 border border-gray-100 rounded-2xl hover:border-primary hover:bg-primary/5 transition-all group flex items-center justify-center w-full md:w-auto">
+                                <Heart size={20} className="text-gray-400 group-hover:text-primary transition-colors" />
                             </button>
                         </div>
                     ) : (
@@ -181,6 +256,20 @@ const ProductDetails = () => {
                             </button>
                         </div>
                     )}
+
+                    {/* Dynamic Delivery Alert */}
+                    <motion.div 
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="bg-green-50/80 backdrop-blur-sm text-green-800 p-5 rounded-2xl border border-green-100 flex items-center space-x-4 mb-10"
+                    >
+                        <div className="bg-white p-2 rounded-xl shadow-sm">
+                            <Clock size={20} className="text-green-600 animate-pulse" />
+                        </div>
+                        <p className="text-sm">
+                            Order within <strong className="font-bold text-green-900 bg-white px-2 py-0.5 rounded-md shadow-sm">{countdown}</strong> to get it by <strong className="font-bold text-green-900 underline decoration-green-300 underline-offset-4">{deliveryEstimate}</strong>
+                        </p>
+                    </motion.div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-10 border-t border-gray-100">
                         <div className="flex items-center space-x-4">

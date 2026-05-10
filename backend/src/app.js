@@ -22,6 +22,7 @@ import productRouter from './routes/product.routes.js';
 import categoryRouter from './routes/category.routes.js';
 import orderRouter from './routes/order.routes.js';
 import couponRouter from './routes/coupon.routes.js';
+import aiRouter from './routes/ai.routes.js';
 
 // Routes declaration
 app.use("/api/v1/users", userRouter);
@@ -29,5 +30,17 @@ app.use("/api/v1/products", productRouter);
 app.use("/api/v1/categories", categoryRouter);
 app.use("/api/v1/orders", orderRouter);
 app.use("/api/v1/coupons", couponRouter);
+app.use("/api/v1/ai", aiRouter);
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+    console.error("Global Error:", err);
+    const statusCode = err.statusCode || 500;
+    res.status(statusCode).json({
+        success: false,
+        message: err.message || "Internal Server Error",
+        errors: err.errors || []
+    });
+});
 
 export { app };

@@ -154,8 +154,8 @@ const Navbar = () => {
                                                             ))}
                                                         </div>
                                                         <div className="pt-4 border-t border-gray-50 space-y-3">
-                                                            <Link to="/checkout" className="w-full bg-primary text-white text-xs font-bold py-3 rounded-xl flex items-center justify-center space-x-2">
-                                                                <span>Quick Checkout</span>
+                                                            <Link to="/cart" className="w-full bg-primary text-white text-xs font-bold py-3 rounded-xl flex items-center justify-center space-x-2">
+                                                                <span>View Cart</span>
                                                             </Link>
                                                         </div>
                                                     </div>

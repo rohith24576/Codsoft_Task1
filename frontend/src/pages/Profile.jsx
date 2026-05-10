@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Mail, Shield, Calendar, LogOut, Camera, Edit3, Check, X } from 'lucide-react';
+import { User, Mail, Shield, Calendar, LogOut, Camera, Edit3, Check, X, MapPin, Plus, Trash2, Home } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const Profile = () => {
@@ -13,6 +13,22 @@ const Profile = () => {
         email: user?.email || '',
         username: user?.username || ''
     });
+
+    // Address Book State
+    const [isAddingAddress, setIsAddingAddress] = useState(false);
+    const [addressForm, setAddressForm] = useState({
+        street: '', city: '', state: '', zipCode: '', country: '', isDefault: false
+    });
+    const { addAddress, removeAddress } = useAuthStore();
+
+    const handleAddAddress = async (e) => {
+        e.preventDefault();
+        const success = await addAddress(addressForm);
+        if (success) {
+            setIsAddingAddress(false);
+            setAddressForm({ street: '', city: '', state: '', zipCode: '', country: '', isDefault: false });
+        }
+    };
 
     if (!user) return null;
 
@@ -209,6 +225,96 @@ const Profile = () => {
                             </div>
                         </div>
                     </div>
+                </div>
+            </motion.div>
+
+            {/* Address Book Section */}
+            <motion.div 
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="bg-white rounded-[3rem] shadow-premium border border-gray-100 overflow-hidden mt-12 p-10"
+            >
+                <div className="flex justify-between items-end mb-10">
+                    <div>
+                        <h2 className="text-3xl font-bold text-primary flex items-center space-x-3">
+                            <MapPin size={28} className="text-primary" />
+                            <span>Address Book</span>
+                        </h2>
+                        <p className="text-secondary mt-2">Manage your shipping and billing addresses.</p>
+                    </div>
+                    {!isAddingAddress && (
+                        <button 
+                            onClick={() => setIsAddingAddress(true)}
+                            className="btn-primary py-4 px-6 flex items-center space-x-2"
+                        >
+                            <Plus size={18} />
+                            <span>Add New Address</span>
+                        </button>
+                    )}
+                </div>
+
+                <AnimatePresence>
+                    {isAddingAddress && (
+                        <motion.form 
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            onSubmit={handleAddAddress}
+                            className="bg-gray-50 rounded-[2rem] p-8 mb-10 space-y-6 border border-gray-100"
+                        >
+                            <div className="flex justify-between items-center mb-4">
+                                <h3 className="text-xl font-bold">New Address</h3>
+                                <button type="button" onClick={() => setIsAddingAddress(false)} className="p-2 hover:bg-gray-200 rounded-full">
+                                    <X size={20} />
+                                </button>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <input type="text" required placeholder="Street Address" value={addressForm.street} onChange={e => setAddressForm({...addressForm, street: e.target.value})} className="input-field py-4" />
+                                <input type="text" required placeholder="City" value={addressForm.city} onChange={e => setAddressForm({...addressForm, city: e.target.value})} className="input-field py-4" />
+                                <div className="grid grid-cols-2 gap-6">
+                                    <input type="text" required placeholder="State" value={addressForm.state} onChange={e => setAddressForm({...addressForm, state: e.target.value})} className="input-field py-4" />
+                                    <input type="text" required placeholder="ZIP" value={addressForm.zipCode} onChange={e => setAddressForm({...addressForm, zipCode: e.target.value})} className="input-field py-4" />
+                                </div>
+                                <input type="text" required placeholder="Country" value={addressForm.country} onChange={e => setAddressForm({...addressForm, country: e.target.value})} className="input-field py-4" />
+                            </div>
+                            <div className="flex items-center space-x-3">
+                                <input type="checkbox" id="isDefault" checked={addressForm.isDefault} onChange={e => setAddressForm({...addressForm, isDefault: e.target.checked})} className="w-5 h-5 accent-primary" />
+                                <label htmlFor="isDefault" className="text-sm font-bold text-secondary">Set as default shipping address</label>
+                            </div>
+                            <button type="submit" className="btn-primary py-4 px-8 mt-4">Save Address</button>
+                        </motion.form>
+                    )}
+                </AnimatePresence>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {user.addresses && user.addresses.length > 0 ? (
+                        user.addresses.map((address) => (
+                            <div key={address._id} className="border border-gray-100 rounded-[2rem] p-8 relative hover:border-primary transition-colors group">
+                                {address.isDefault && (
+                                    <span className="absolute top-6 right-6 bg-green-50 text-green-600 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center space-x-1">
+                                        <Home size={12} />
+                                        <span>Default</span>
+                                    </span>
+                                )}
+                                <h4 className="text-lg font-bold mb-4 pr-20">{address.street}</h4>
+                                <p className="text-secondary text-sm space-y-1">
+                                    <span className="block">{address.city}, {address.state} {address.zipCode}</span>
+                                    <span className="block font-medium">{address.country}</span>
+                                </p>
+                                <button 
+                                    onClick={() => removeAddress(address._id)}
+                                    className="absolute bottom-6 right-6 p-3 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors opacity-0 group-hover:opacity-100"
+                                >
+                                    <Trash2 size={18} />
+                                </button>
+                            </div>
+                        ))
+                    ) : (
+                        <div className="col-span-full py-12 text-center bg-gray-50 rounded-[2rem] border border-gray-100 border-dashed">
+                            <p className="text-secondary">You haven't saved any addresses yet.</p>
+                        </div>
+                    )}
                 </div>
             </motion.div>
         </div>

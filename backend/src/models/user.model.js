@@ -50,6 +50,16 @@ const userSchema = new Schema(
                 ref: "Product"
             }
         ],
+        addresses: [
+            {
+                street: String,
+                city: String,
+                state: String,
+                zipCode: String,
+                country: String,
+                isDefault: { type: Boolean, default: false }
+            }
+        ],
         refreshToken: {
             type: String
         }

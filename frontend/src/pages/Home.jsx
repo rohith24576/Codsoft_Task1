@@ -66,7 +66,7 @@ const Home = () => {
                             </h1>
                             
                             <p className="text-xl text-gray-300 mb-12 max-w-lg leading-relaxed font-light">
-                                Experience the intersection of artisanal craftsmanship and modern minimalism. Our 2026 collection defines the new standard of essential luxury.
+                                Premium fashion made simple. Discover high-quality fabrics, comfortable fits, and modern styles that look great anywhere.
                             </p>
                             
                             <div className="flex flex-wrap gap-6">
@@ -74,9 +74,9 @@ const Home = () => {
                                     <span className="relative z-10">Explore Collection</span>
                                     <ArrowRight size={20} className="absolute right-6 top-1/2 -translate-y-1/2 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
                                 </Link>
-                                <Link to="/shop?category=featured" className="px-10 py-5 bg-transparent border border-white/30 text-white font-bold rounded-full hover:bg-white hover:text-primary transition-all duration-300">
+                                <a href="#featured" className="px-10 py-5 bg-transparent border border-white/30 text-white font-bold rounded-full hover:bg-white hover:text-primary transition-all duration-300">
                                     View Lookbook
-                                </Link>
+                                </a>
                             </div>
                         </motion.div>
                     </div>
@@ -233,7 +233,7 @@ const Home = () => {
             </section>
 
             {/* Featured Products */}
-            <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <section id="featured" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 mt-[-40px]">
                 <div className="flex justify-between items-end mb-12">
                     <div>
                         <h2 className="text-3xl font-bold tracking-tight text-primary">Featured Selection</h2>
@@ -264,16 +264,16 @@ const Home = () => {
                         <p className="text-gray-400 mb-10 text-lg">
                             Subscribe to receive updates, access to exclusive deals, and more.
                         </p>
-                        <form onSubmit={handleSubscribe} className="flex flex-col sm:row space-y-4 sm:space-y-0 sm:space-x-4">
+                        <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-4">
                             <input 
                                 type="email" 
                                 required
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="Your email address" 
-                                className="flex-grow px-6 py-4 rounded-full bg-white/10 border border-white/20 text-white placeholder:text-gray-500 focus:outline-none focus:border-white transition-colors"
+                                className="flex-grow px-8 py-5 rounded-full bg-white/10 border border-white/20 text-white placeholder:text-gray-500 focus:outline-none focus:border-white transition-all backdrop-blur-sm"
                             />
-                            <button type="submit" className="px-8 py-4 bg-white text-primary rounded-full font-bold hover:bg-gray-100 transition-colors">
+                            <button type="submit" className="px-10 py-5 bg-white text-primary rounded-full font-bold hover:bg-gray-100 transition-all active:scale-95 shadow-xl">
                                 Subscribe
                             </button>
                         </form>
