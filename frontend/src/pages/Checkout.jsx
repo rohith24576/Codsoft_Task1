@@ -18,6 +18,7 @@ const Checkout = () => {
     const { subtotal, total } = getCartTotal();
 
     const [address, setAddress] = useState({
+        name: '',
         street: '',
         city: '',
         state: '',
@@ -198,7 +199,7 @@ const Checkout = () => {
                                         <span className="truncate pr-4 text-primary font-bold">
                                             {selectedAddressId === 'new' ? '+ Enter New Address' : (() => {
                                                 const a = user.addresses.find(addr => addr._id === selectedAddressId);
-                                                return a ? `${a.street}, ${a.city}, ${a.state} ${a.zipCode} ${a.isDefault ? '(Default)' : ''}` : '';
+                                                return a ? `${a.name ? a.name + ': ' : ''}${a.street}, ${a.city} ${a.isDefault ? '(Default)' : ''}` : '';
                                             })()}
                                         </span>
                                         <ChevronDown className={`text-gray-400 transition-transform ${isAddressDropdownOpen ? 'rotate-180' : ''}`} size={20} />
@@ -218,6 +219,7 @@ const Checkout = () => {
                                                         onClick={() => { setSelectedAddressId(addr._id); setIsAddressDropdownOpen(false); }}
                                                         className={`px-6 py-4 cursor-pointer hover:bg-white hover:text-primary transition-colors ${selectedAddressId === addr._id ? 'bg-primary/5 font-bold text-primary' : 'text-secondary font-medium'}`}
                                                     >
+                                                        {addr.name && <span className="font-bold mr-2 text-primary">{addr.name}:</span>}
                                                         {addr.street}, {addr.city}, {addr.state} {addr.zipCode} 
                                                         {addr.isDefault && <span className="text-green-500 text-[10px] ml-2 uppercase tracking-widest font-bold bg-green-50 px-2 py-0.5 rounded-md">Default</span>}
                                                     </div>
@@ -239,6 +241,15 @@ const Checkout = () => {
                             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="space-y-6">
                                 <div className="relative">
                                     <MapPin className="absolute left-4 top-4 text-gray-400" size={18} />
+                                    <input 
+                                        type="text" 
+                                        placeholder="Address Name (e.g. Home, Office)" 
+                                        required
+                                        value={address.name}
+                                        onChange={(e) => setAddress({...address, name: e.target.value})}
+                                        className="input-field pl-12 py-4 mb-6"
+                                    />
+                                    <MapPin className="absolute left-4 top-[5.25rem] text-gray-400" size={18} />
                                     <input 
                                         type="text" 
                                         placeholder="Street Address" 

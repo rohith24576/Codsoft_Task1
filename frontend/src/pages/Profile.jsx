@@ -17,7 +17,7 @@ const Profile = () => {
     // Address Book State
     const [isAddingAddress, setIsAddingAddress] = useState(false);
     const [addressForm, setAddressForm] = useState({
-        street: '', city: '', state: '', zipCode: '', country: '', isDefault: false
+        name: '', street: '', city: '', state: '', zipCode: '', country: '', isDefault: false
     });
     const { addAddress, removeAddress } = useAuthStore();
 
@@ -26,7 +26,7 @@ const Profile = () => {
         const success = await addAddress(addressForm);
         if (success) {
             setIsAddingAddress(false);
-            setAddressForm({ street: '', city: '', state: '', zipCode: '', country: '', isDefault: false });
+            setAddressForm({ name: '', street: '', city: '', state: '', zipCode: '', country: '', isDefault: false });
         }
     };
 
@@ -270,6 +270,7 @@ const Profile = () => {
                                 </button>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <input type="text" required placeholder="Address Name (e.g. Home, Office)" value={addressForm.name} onChange={e => setAddressForm({...addressForm, name: e.target.value})} className="input-field py-4 col-span-full" />
                                 <input type="text" required placeholder="Street Address" value={addressForm.street} onChange={e => setAddressForm({...addressForm, street: e.target.value})} className="input-field py-4" />
                                 <input type="text" required placeholder="City" value={addressForm.city} onChange={e => setAddressForm({...addressForm, city: e.target.value})} className="input-field py-4" />
                                 <div className="grid grid-cols-2 gap-6">
@@ -297,7 +298,8 @@ const Profile = () => {
                                         <span>Default</span>
                                     </span>
                                 )}
-                                <h4 className="text-lg font-bold mb-4 pr-20">{address.street}</h4>
+                                <h4 className="text-lg font-bold mb-1 pr-20">{address.name || 'Saved Address'}</h4>
+                                <h5 className="text-sm font-semibold mb-3 pr-20">{address.street}</h5>
                                 <p className="text-secondary text-sm space-y-1">
                                     <span className="block">{address.city}, {address.state} {address.zipCode}</span>
                                     <span className="block font-medium">{address.country}</span>

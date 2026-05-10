@@ -52,6 +52,7 @@ const userSchema = new Schema(
         ],
         addresses: [
             {
+                name: String,
                 street: String,
                 city: String,
                 state: String,

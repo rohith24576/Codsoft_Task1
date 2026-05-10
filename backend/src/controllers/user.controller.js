@@ -351,12 +351,13 @@ const addToRecentlyViewed = asyncHandler(async (req, res) => {
 });
 
 const addAddress = asyncHandler(async (req, res) => {
-    const { street, city, state, zipCode, country, isDefault } = req.body;
+    const { name, street, city, state, zipCode, country, isDefault } = req.body;
     
     // MOCK DB LOGIC
     if (process.env.USE_MOCK_DB === "true") {
         const mockAddress = { 
             _id: "mock_address_" + Date.now(), 
+            name: name || "Home",
             street, city, state, zipCode, country, 
             isDefault: isDefault || mockAddresses.length === 0
         };
@@ -373,7 +374,7 @@ const addAddress = asyncHandler(async (req, res) => {
         user.addresses.forEach(addr => addr.isDefault = false);
     }
     
-    user.addresses.push({ street, city, state, zipCode, country, isDefault: isDefault || user.addresses.length === 0 });
+    user.addresses.push({ name: name || "Home", street, city, state, zipCode, country, isDefault: isDefault || user.addresses.length === 0 });
     await user.save({ validateBeforeSave: false });
     
     return res.status(200).json(new ApiResponse(200, user.addresses, "Address added successfully"));
