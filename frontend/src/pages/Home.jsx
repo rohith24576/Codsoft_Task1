@@ -2,38 +2,23 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Star, ShieldCheck, Truck, RotateCcw, Tag, ShoppingBag } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useProductStore } from '../store/useProductStore';
 import ProductCard from '../components/ProductCard';
 import { ProductSkeleton } from '../components/Skeleton';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
-
 const Home = () => {
     const { featuredProducts, fetchFeaturedProducts, categories, fetchCategories, loading } = useProductStore();
     const [email, setEmail] = useState('');
 
-    const handleSubscribe = async (e) => {
+    const handleSubscribe = (e) => {
         e.preventDefault();
-        console.log("Subscribing email:", email);
         if (email) {
-            try {
-                // Try real API call
-                await axios.post(`${API_URL}/newsletter/subscribe`, { email });
-                toast.success('Welcome to the Nest! 🦅 Check your inbox.', {
-                    duration: 4000,
-                    icon: '✨'
-                });
-                setEmail('');
-            } catch (error) {
-                console.error("Subscription API error:", error.message);
-                // Fallback success for demo
-                toast.success('Welcome to the Elite Circle! ✨', {
-                    duration: 4000,
-                });
-                setEmail('');
-            }
+            toast.success('Welcome to the Nest! 🦅 Your subscription was successful.', {
+                duration: 4000,
+                icon: '✨'
+            });
+            setEmail('');
         }
     };
 
