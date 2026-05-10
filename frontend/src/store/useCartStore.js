@@ -8,6 +8,8 @@ export const useCartStore = create(
             cart: [],
             coupon: null,
             isCouponApplied: false,
+            shippingThreshold: 100,
+            shippingFee: 10,
 
             addToCart: (product, qty = 1) => {
                 const cart = get().cart;
@@ -52,16 +54,22 @@ export const useCartStore = create(
             },
 
             getCartTotal: () => {
-                const subtotal = get().cart.reduce((acc, item) => acc + item.price * item.qty, 0);
-                let total = subtotal;
-                if (get().coupon) {
-                    if (get().coupon.type === 'flat') {
-                        total = Math.max(0, subtotal - get().coupon.discount);
+                const { cart, coupon, shippingThreshold, shippingFee } = get();
+                const subtotal = cart.reduce((acc, item) => acc + item.price * item.qty, 0);
+                const isFreeShipping = subtotal >= shippingThreshold;
+                const currentShippingFee = subtotal > 0 && !isFreeShipping ? shippingFee : 0;
+                
+                let total = subtotal + currentShippingFee;
+                if (coupon) {
+                    if (coupon.type === 'flat') {
+                        total = Math.max(0, total - coupon.discount);
                     } else {
-                        total = subtotal - (subtotal * get().coupon.discount) / 100;
+                        // Apply discount to subtotal only or subtotal + shipping? Usually just subtotal.
+                        const discountAmount = (subtotal * coupon.discount) / 100;
+                        total = Math.max(0, subtotal - discountAmount + currentShippingFee);
                     }
                 }
-                return { subtotal, total };
+                return { subtotal, total, isFreeShipping, shippingFee: currentShippingFee };
             }
         }),
         {

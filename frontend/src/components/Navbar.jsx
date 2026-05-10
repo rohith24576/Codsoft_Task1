@@ -14,7 +14,7 @@ const Navbar = () => {
     const [searchResults, setSearchResults] = useState([]);
     
     const { user, logout } = useAuthStore();
-    const { cart } = useCartStore();
+    const { cart, shippingThreshold, getCartTotal } = useCartStore();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -24,9 +24,8 @@ const Navbar = () => {
         setSearchTerm('');
     }, [location]);
 
+    const { subtotal } = getCartTotal();
     const cartCount = cart?.reduce((acc, item) => acc + (item?.qty || 0), 0) || 0;
-    const subtotal = cart?.reduce((acc, item) => acc + (item?.price || 0) * (item?.qty || 0), 0) || 0;
-    const shippingThreshold = 100;
     const shippingProgress = Math.min(100, (subtotal / shippingThreshold) * 100);
 
     // Live Search Logic

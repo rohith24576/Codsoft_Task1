@@ -10,7 +10,7 @@ const Cart = () => {
     const { cart, removeFromCart, updateQty, coupon, applyCoupon, removeCoupon, getCartTotal } = useCartStore();
     const [couponCode, setCouponCode] = useState('');
     const [isValidating, setIsValidating] = useState(false);
-    const { subtotal, total } = getCartTotal();
+    const { subtotal, total, isFreeShipping, shippingFee } = getCartTotal();
     const navigate = useNavigate();
 
     const handleApplyCoupon = async (e) => {
@@ -117,7 +117,11 @@ const Cart = () => {
                             </div>
                             <div className="flex justify-between text-secondary">
                                 <span>Shipping</span>
-                                <span className="text-green-500 font-medium">Free</span>
+                                {isFreeShipping ? (
+                                    <span className="text-green-500 font-medium">Free</span>
+                                ) : (
+                                    <span className="text-primary font-medium">${shippingFee.toFixed(2)}</span>
+                                )}
                             </div>
                             {coupon && (
                                 <div className="flex justify-between text-green-500">

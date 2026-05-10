@@ -111,26 +111,42 @@ const Home = () => {
 
             {/* Features Bar */}
             <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-12 border-y border-gray-100">
-                    <div className="flex flex-col items-center text-center space-y-3">
-                        <Truck className="text-primary" size={24} />
-                        <h3 className="text-sm font-bold">Free Shipping</h3>
-                        <p className="text-xs text-secondary">On orders over $150</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12 py-16 border-y border-gray-100">
+                    <div className="flex items-start space-x-5 group cursor-default">
+                        <div className="p-3 bg-gray-50 rounded-2xl group-hover:bg-primary group-hover:text-white transition-colors duration-500">
+                            <Truck size={22} className="transition-colors" />
+                        </div>
+                        <div>
+                            <h3 className="text-sm font-bold text-primary mb-1">Free Shipping</h3>
+                            <p className="text-[11px] text-secondary font-medium leading-relaxed">On orders over $150</p>
+                        </div>
                     </div>
-                    <div className="flex flex-col items-center text-center space-y-3">
-                        <ShieldCheck className="text-primary" size={24} />
-                        <h3 className="text-sm font-bold">Secure Payment</h3>
-                        <p className="text-xs text-secondary">100% secure checkout</p>
+                    <div className="flex items-start space-x-5 group cursor-default">
+                        <div className="p-3 bg-gray-50 rounded-2xl group-hover:bg-primary group-hover:text-white transition-colors duration-500">
+                            <ShieldCheck size={22} className="transition-colors" />
+                        </div>
+                        <div>
+                            <h3 className="text-sm font-bold text-primary mb-1">Secure Payment</h3>
+                            <p className="text-[11px] text-secondary font-medium leading-relaxed">100% secure checkout</p>
+                        </div>
                     </div>
-                    <div className="flex flex-col items-center text-center space-y-3">
-                        <RotateCcw className="text-primary" size={24} />
-                        <h3 className="text-sm font-bold">Easy Returns</h3>
-                        <p className="text-xs text-secondary">30-day return policy</p>
+                    <div className="flex items-start space-x-5 group cursor-default">
+                        <div className="p-3 bg-gray-50 rounded-2xl group-hover:bg-primary group-hover:text-white transition-colors duration-500">
+                            <RotateCcw size={22} className="transition-colors" />
+                        </div>
+                        <div>
+                            <h3 className="text-sm font-bold text-primary mb-1">Easy Returns</h3>
+                            <p className="text-[11px] text-secondary font-medium leading-relaxed">30-day return policy</p>
+                        </div>
                     </div>
-                    <div className="flex flex-col items-center text-center space-y-3">
-                        <Star className="text-primary" size={24} />
-                        <h3 className="text-sm font-bold">Premium Quality</h3>
-                        <p className="text-xs text-secondary">Crafted with care</p>
+                    <div className="flex items-start space-x-5 group cursor-default">
+                        <div className="p-3 bg-gray-50 rounded-2xl group-hover:bg-primary group-hover:text-white transition-colors duration-500">
+                            <Star size={22} className="transition-colors" />
+                        </div>
+                        <div>
+                            <h3 className="text-sm font-bold text-primary mb-1">Premium Quality</h3>
+                            <p className="text-[11px] text-secondary font-medium leading-relaxed">Crafted with care</p>
+                        </div>
                     </div>
                 </div>
             </section>
