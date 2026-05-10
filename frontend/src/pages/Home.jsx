@@ -48,19 +48,21 @@ const Home = () => {
 
                 <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
                     <div className="max-w-3xl">
+                        <div className="flex items-center space-x-4 mb-10">
+                            <span className="w-12 h-[1px] bg-white/30"></span>
+                            <span className="text-[10px] font-bold tracking-[0.5em] text-white/80 uppercase">
+                                Curated Excellence 2026
+                            </span>
+                        </div>
+                            
                         <motion.div
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.8, delay: 0.5 }}
+                            transition={{ duration: 0.8, delay: 0.7 }}
                         >
-                            <span className="inline-flex items-center space-x-2 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-[10px] font-bold tracking-[0.3em] text-white uppercase mb-8">
-                                <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
-                                <span>Curated Excellence 2026</span>
-                            </span>
-                            
                             <h1 className="text-7xl lg:text-9xl font-bold tracking-tighter text-white mb-8 leading-[0.9]">
                                 ELEVATE <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-400 to-white italic">EVERYDAY.</span>
+                                <span className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-gray-400 to-white italic pr-12">EVERYDAY</span>
                             </h1>
                             
                             <p className="text-xl text-gray-300 mb-12 max-w-lg leading-relaxed font-light">
