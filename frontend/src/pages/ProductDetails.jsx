@@ -18,6 +18,8 @@ const ProductDetails = () => {
     const [selectedImage, setSelectedImage] = useState(0);
     const [quantity, setQuantity] = useState(1);
     const [activeTab, setActiveTab] = useState('description');
+    const [selectedSize, setSelectedSize] = useState('');
+    const [isSizeModalOpen, setIsSizeModalOpen] = useState(false);
     
     // Review States
     const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
@@ -120,6 +122,60 @@ const ProductDetails = () => {
         );
     }
 
+    const isAccessory = product.category?.name?.toLowerCase().includes('accessor');
+    const isShoe = product.category?.name?.toLowerCase().includes('shoe');
+    const isWomen = product.category?.name?.toLowerCase().includes('women');
+    const availableSizes = isShoe ? ['7', '8', '9', '10', '11', '12'] : ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+
+    const tabs = ['description', 'reviews', 'shipping'];
+    if (!isAccessory) {
+        tabs.push('size chart');
+    }
+
+    const SizeChartTable = () => {
+        if (isShoe) {
+            return (
+                <table className="w-full text-left border-collapse">
+                    <thead>
+                        <tr className="border-b border-gray-200">
+                            <th className="py-4 font-bold text-sm text-primary uppercase tracking-wider">US</th>
+                            <th className="py-4 font-bold text-sm text-primary uppercase tracking-wider">UK</th>
+                            <th className="py-4 font-bold text-sm text-primary uppercase tracking-wider">EU</th>
+                            <th className="py-4 font-bold text-sm text-primary uppercase tracking-wider">CM</th>
+                        </tr>
+                    </thead>
+                    <tbody className="text-secondary text-sm">
+                        {[['7', '6', '40', '25'], ['8', '7', '41', '26'], ['9', '8', '42.5', '27'], ['10', '9', '44', '28'], ['11', '10', '45', '29'], ['12', '11', '46', '30']].map((row, i) => (
+                            <tr key={i} className="border-b border-gray-100 last:border-0 hover:bg-gray-50">
+                                {row.map((val, j) => <td key={j} className="py-4">{val}</td>)}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            );
+        }
+        const measurement1 = isWomen ? 'Bust (in)' : 'Chest (in)';
+        return (
+            <table className="w-full text-left border-collapse">
+                <thead>
+                    <tr className="border-b border-gray-200">
+                        <th className="py-4 font-bold text-sm text-primary uppercase tracking-wider">Size</th>
+                        <th className="py-4 font-bold text-sm text-primary uppercase tracking-wider">{measurement1}</th>
+                        <th className="py-4 font-bold text-sm text-primary uppercase tracking-wider">Waist (in)</th>
+                        <th className="py-4 font-bold text-sm text-primary uppercase tracking-wider">Hips (in)</th>
+                    </tr>
+                </thead>
+                <tbody className="text-secondary text-sm">
+                    {[['XS', '32-34', '26-28', '34-36'], ['S', '35-37', '29-31', '37-39'], ['M', '38-40', '32-34', '40-42'], ['L', '41-43', '35-37', '43-45'], ['XL', '44-46', '38-40', '46-48'], ['XXL', '47-49', '41-43', '49-51']].map((row, i) => (
+                        <tr key={i} className="border-b border-gray-100 last:border-0 hover:bg-gray-50">
+                            {row.map((val, j) => <td key={j} className="py-4">{val}</td>)}
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        );
+    };
+
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-20">
@@ -209,7 +265,32 @@ const ProductDetails = () => {
                     </p>
 
                     {user?.role !== 'ADMIN' ? (
-                        <div className="grid grid-cols-1 md:grid-cols-[auto_1fr_auto] gap-4 mb-10">
+                        <>
+                            {!isAccessory && (
+                                <div className="mb-8">
+                                    <div className="flex justify-between items-center mb-4">
+                                        <span className="text-sm font-bold text-primary uppercase tracking-widest">Select Size</span>
+                                        <button 
+                                            onClick={() => setIsSizeModalOpen(true)} 
+                                            className="text-xs font-bold text-secondary underline decoration-gray-300 underline-offset-4 hover:text-primary transition-colors"
+                                        >
+                                            Size Guide
+                                        </button>
+                                    </div>
+                                    <div className="flex flex-wrap gap-3">
+                                        {availableSizes.map(s => (
+                                            <button 
+                                                key={s} 
+                                                onClick={() => setSelectedSize(s)}
+                                                className={`w-14 h-14 rounded-2xl border-2 flex items-center justify-center font-bold text-sm transition-all ${selectedSize === s ? 'border-primary bg-primary text-white shadow-lg' : 'border-gray-100 text-secondary hover:border-gray-300 hover:bg-gray-50'}`}
+                                            >
+                                                {s}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                            <div className="grid grid-cols-1 md:grid-cols-[auto_1fr_auto] gap-4 mb-10">
                             {/* Quantity Selector */}
                             <div className="flex items-center justify-between bg-gray-50 rounded-2xl px-6 py-4 border border-gray-100 min-w-[150px] w-full md:w-auto">
                                 <button 
@@ -229,12 +310,14 @@ const ProductDetails = () => {
 
                             {/* Add to Cart Button */}
                             <button 
-                                disabled={product.stock === 0}
+                                disabled={product.stock === 0 || (!isAccessory && !selectedSize)}
                                 onClick={() => addToCart(product, quantity)}
                                 className="w-full btn-primary flex items-center justify-center space-x-3 py-5 rounded-2xl shadow-xl hover:shadow-primary/20 transition-all active:scale-[0.98] disabled:opacity-50"
                             >
                                 <ShoppingCart size={20} />
-                                <span className="font-bold uppercase tracking-widest text-xs whitespace-nowrap">Add to Cart</span>
+                                <span className="font-bold uppercase tracking-widest text-xs whitespace-nowrap">
+                                    {(!isAccessory && !selectedSize) ? 'Select a Size' : 'Add to Cart'}
+                                </span>
                             </button>
 
                             {/* Wishlist Button */}
@@ -242,6 +325,7 @@ const ProductDetails = () => {
                                 <Heart size={20} className="text-gray-400 group-hover:text-primary transition-colors" />
                             </button>
                         </div>
+                        </>
                     ) : (
                         <div className="mb-10 p-8 bg-primary/5 rounded-[2.5rem] border border-primary/10 flex items-center justify-between">
                             <div className="flex items-center space-x-4 text-primary">
@@ -293,7 +377,7 @@ const ProductDetails = () => {
             {/* Tabs */}
             <div className="mb-20">
                 <div className="flex space-x-12 border-b border-gray-100 mb-12 overflow-x-auto scrollbar-hide">
-                    {['description', 'reviews', 'shipping'].map((tab) => (
+                    {tabs.map((tab) => (
                         <button 
                             key={tab}
                             onClick={() => setActiveTab(tab)}
@@ -436,6 +520,19 @@ const ProductDetails = () => {
                                 </div>
                             </motion.div>
                         )}
+                        {activeTab === 'size chart' && !isAccessory && (
+                            <motion.div 
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                className="bg-white rounded-[3rem] border border-gray-100 p-10 overflow-x-auto"
+                            >
+                                <h4 className="text-2xl font-bold text-primary mb-8">{isShoe ? 'Footwear' : (isWomen ? "Women's" : "Men's")} Size Guide</h4>
+                                <div className="min-w-[600px]">
+                                    <SizeChartTable />
+                                </div>
+                            </motion.div>
+                        )}
                     </AnimatePresence>
                 </div>
             </div>
@@ -533,6 +630,51 @@ const ProductDetails = () => {
                     </div>
                 </section>
             )}
+
+            {/* Size Guide Modal */}
+            <AnimatePresence>
+                {isSizeModalOpen && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                        <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsSizeModalOpen(false)}
+                            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                        />
+                        <motion.div 
+                            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                            className="relative bg-white rounded-[3rem] shadow-premium w-full max-w-3xl overflow-hidden z-10 flex flex-col max-h-[90vh]"
+                        >
+                            <div className="flex justify-between items-center p-8 border-b border-gray-100">
+                                <h3 className="text-2xl font-bold text-primary">{isShoe ? 'Footwear' : (isWomen ? "Women's" : "Men's")} Size Guide</h3>
+                                <button onClick={() => setIsSizeModalOpen(false)} className="p-2 text-gray-400 hover:bg-gray-100 rounded-full transition-colors">
+                                    <X size={24} />
+                                </button>
+                            </div>
+                            <div className="p-8 overflow-y-auto">
+                                <div className="mb-8">
+                                    <p className="text-secondary text-sm leading-relaxed">
+                                        Use the chart below to determine your size. If you're on the borderline between two sizes, order the smaller size for a tighter fit or the larger size for a looser fit.
+                                    </p>
+                                </div>
+                                <div className="overflow-x-auto">
+                                    <div className="min-w-[600px]">
+                                        <SizeChartTable />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="p-8 bg-gray-50 border-t border-gray-100 mt-auto">
+                                <button onClick={() => setIsSizeModalOpen(false)} className="w-full btn-primary py-4 rounded-2xl shadow-lg">
+                                    Done
+                                </button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };
