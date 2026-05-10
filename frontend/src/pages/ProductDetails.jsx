@@ -290,7 +290,8 @@ const ProductDetails = () => {
                                                                 {[...Array(5)].map((_, j) => (
                                                                     <Star key={j} size={12} className={j < review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-100'} />
                                                                 ))}
-                                                                <span className="text-[10px] font-bold text-secondary uppercase tracking-widest ml-2">Verified Purchase</span>
+                                                                <span className="text-[11px] font-bold text-primary ml-1.5">{review.rating.toFixed(1)}</span>
+                                                                <span className="text-[10px] font-bold text-secondary uppercase tracking-widest ml-4">Verified Purchase</span>
                                                             </div>
                                                         </div>
                                                     </div>
