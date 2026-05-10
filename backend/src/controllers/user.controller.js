@@ -5,6 +5,9 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 
+// Mock DB Data
+let mockAddresses = [];
+
 const generateAccessAndRefereshTokens = async (userId) => {
     try {
         const user = await User.findById(userId);
@@ -235,9 +238,13 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
 const getCurrentUser = asyncHandler(async (req, res) => {
     // MOCK DB LOGIC
     if (process.env.USE_MOCK_DB === "true") {
+        const mockUser = { 
+            ...(req.user || { fullName: "Demo User", email: "demo@example.com" }), 
+            addresses: mockAddresses 
+        };
         return res
             .status(200)
-            .json(new ApiResponse(200, req.user || { fullName: "Demo User", email: "demo@example.com" }, "Current user fetched (Mock Mode)"));
+            .json(new ApiResponse(200, mockUser, "Current user fetched (Mock Mode)"));
     }
     return res
         .status(200)
@@ -351,10 +358,13 @@ const addAddress = asyncHandler(async (req, res) => {
         const mockAddress = { 
             _id: "mock_address_" + Date.now(), 
             street, city, state, zipCode, country, 
-            isDefault: isDefault || true 
+            isDefault: isDefault || mockAddresses.length === 0
         };
-        // Return an array representing the user's addresses
-        return res.status(200).json(new ApiResponse(200, [mockAddress], "Address added successfully (Mock Mode)"));
+        if (mockAddress.isDefault) {
+            mockAddresses.forEach(a => a.isDefault = false);
+        }
+        mockAddresses.push(mockAddress);
+        return res.status(200).json(new ApiResponse(200, mockAddresses, "Address added successfully (Mock Mode)"));
     }
 
     const user = await User.findById(req.user._id);
@@ -374,7 +384,8 @@ const removeAddress = asyncHandler(async (req, res) => {
     
     // MOCK DB LOGIC
     if (process.env.USE_MOCK_DB === "true") {
-        return res.status(200).json(new ApiResponse(200, [], "Address removed successfully (Mock Mode)"));
+        mockAddresses = mockAddresses.filter(addr => addr._id !== addressId);
+        return res.status(200).json(new ApiResponse(200, mockAddresses, "Address removed successfully (Mock Mode)"));
     }
 
     const user = await User.findById(req.user._id);
