@@ -123,7 +123,7 @@ const ProductDetails = () => {
     }
 
     const isAccessory = product.category?.name?.toLowerCase().includes('accessor');
-    const isShoe = product.category?.name?.toLowerCase().includes('shoe');
+    const isShoe = product.category?.name?.toLowerCase().includes('shoe') || product.category?.name?.toLowerCase().includes('footwear') || product.category?.name?.toLowerCase().includes('sneaker');
     const isWomen = product.category?.name?.toLowerCase().includes('women');
     const availableSizes = isShoe ? ['7', '8', '9', '10', '11', '12'] : ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
