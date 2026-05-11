@@ -115,7 +115,33 @@ const Login = () => {
                         </button>
                     </form>
 
-                    <div className="mt-12 text-center">
+                    <div className="mt-8 p-6 bg-gray-50 border border-gray-100 rounded-2xl">
+                        <h3 className="text-[10px] font-bold uppercase tracking-[0.1em] text-secondary mb-4 flex items-center justify-center space-x-2">
+                            <span>Demo Credentials</span>
+                        </h3>
+                        <div className="space-y-3">
+                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-xs space-y-2 sm:space-y-0">
+                                <span className="text-secondary font-bold uppercase tracking-wider">Admin</span>
+                                <button 
+                                    onClick={() => setFormData({ email: 'admin@gmail.com', password: 'admin1234' })}
+                                    className="font-mono bg-white px-3 py-2 rounded-lg border border-gray-200 hover:border-primary hover:text-primary transition-colors text-left"
+                                >
+                                    admin@gmail.com / admin1234
+                                </button>
+                            </div>
+                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-xs space-y-2 sm:space-y-0">
+                                <span className="text-secondary font-bold uppercase tracking-wider">Test User</span>
+                                <button 
+                                    onClick={() => setFormData({ email: 'test@gmail.com', password: 'test1234' })}
+                                    className="font-mono bg-white px-3 py-2 rounded-lg border border-gray-200 hover:border-primary hover:text-primary transition-colors text-left"
+                                >
+                                    test@gmail.com / test1234
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="mt-10 text-center">
                         <p className="text-secondary text-sm">
                             New to ShopNest Elite?{' '}
                             <Link to="/register" className="font-bold text-primary hover:underline underline-offset-4">

@@ -74,11 +74,12 @@ const loginUser = asyncHandler(async (req, res) => {
     // MOCK DB LOGIC
     if (process.env.USE_MOCK_DB === "true") {
         const isAdmin = email === 'admin@gmail.com' && password === 'admin1234';
+        const isTestUser = email === 'test@gmail.com';
         
         const mockUser = {
-            _id: isAdmin ? "admin_user_999" : "mock_user_123",
-            fullName: isAdmin ? "System Admin" : "Demo User",
-            username: username || (isAdmin ? "admin" : "demo_user"),
+            _id: isAdmin ? "admin_user_999" : (isTestUser ? "test_user_777" : "mock_user_123"),
+            fullName: isAdmin ? "System Admin" : (isTestUser ? "Test User" : "Demo User"),
+            username: username || (isAdmin ? "admin" : (isTestUser ? "testuser" : "demo_user")),
             email: email || (isAdmin ? "admin@gmail.com" : "demo@example.com"),
             avatar: "/default-avatar.svg",
             role: isAdmin ? "ADMIN" : "USER"
