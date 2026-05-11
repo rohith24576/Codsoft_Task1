@@ -228,13 +228,14 @@ const Profile = () => {
                 </div>
             </motion.div>
 
-            {/* Address Book Section */}
-            <motion.div 
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="bg-white rounded-[3rem] shadow-premium border border-gray-100 overflow-hidden mt-12 p-10"
-            >
+            {/* Address Book Section (Hidden for Admins) */}
+            {user?.role !== 'ADMIN' && (
+                <motion.div 
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="bg-white rounded-[3rem] shadow-premium border border-gray-100 overflow-hidden mt-12 p-10"
+                >
                 <div className="flex justify-between items-end mb-10">
                     <div>
                         <h2 className="text-3xl font-bold text-primary flex items-center space-x-3">
@@ -319,6 +320,7 @@ const Profile = () => {
                     )}
                 </div>
             </motion.div>
+            )}
         </div>
     );
 };
