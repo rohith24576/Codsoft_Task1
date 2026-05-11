@@ -17,7 +17,6 @@ const Shop = () => {
     const [maxPrice, setMaxPrice] = useState(searchParams.get('maxPrice') || '');
     const [selectedSizes, setSelectedSizes] = useState(searchParams.get('size')?.split(',') || []);
     const [selectedColors, setSelectedColors] = useState(searchParams.get('color')?.split(',') || []);
-    const [selectedBrands, setSelectedBrands] = useState(searchParams.get('brand')?.split(',') || []);
     
     const search = searchParams.get('search') || '';
     const category = searchParams.get('category') || '';
@@ -26,16 +25,21 @@ const Shop = () => {
     const currentMax = searchParams.get('maxPrice') || '';
     const currentSize = searchParams.get('size') || '';
     const currentColor = searchParams.get('color') || '';
-    const currentBrand = searchParams.get('brand') || '';
 
     const FILTER_SIZES = ['S', 'M', 'L', 'XL', '7', '8', '9', '10'];
-    const FILTER_COLORS = ['Black', 'White', 'Navy', 'Grey', 'Red', 'Brown'];
-    const FILTER_BRANDS = ['Elite', 'Nike', 'Zara', 'Gucci'];
+    const FILTER_COLORS = [
+        { name: 'Black', hex: '#000000' },
+        { name: 'White', hex: '#FFFFFF' },
+        { name: 'Navy', hex: '#1C2E4A' },
+        { name: 'Grey', hex: '#808080' },
+        { name: 'Red', hex: '#8B0000' },
+        { name: 'Brown', hex: '#654321' }
+    ];
 
     useEffect(() => {
-        fetchProducts({ search, category, sort, minPrice: currentMin, maxPrice: currentMax, size: currentSize, color: currentColor, brand: currentBrand });
+        fetchProducts({ search, category, sort, minPrice: currentMin, maxPrice: currentMax, size: currentSize, color: currentColor });
         fetchCategories();
-    }, [search, category, sort, currentMin, currentMax, currentSize, currentColor, currentBrand, fetchProducts, fetchCategories]);
+    }, [search, category, sort, currentMin, currentMax, currentSize, currentColor, fetchProducts, fetchCategories]);
 
     const handleSortChange = (value) => {
         setSearchParams({ ...Object.fromEntries(searchParams), sort: value });
@@ -62,9 +66,6 @@ const Shop = () => {
 
         if (selectedColors.length > 0) params.color = selectedColors.join(',');
         else delete params.color;
-
-        if (selectedBrands.length > 0) params.brand = selectedBrands.join(',');
-        else delete params.brand;
         
         setSearchParams(params);
         setIsFilterOpen(false);
@@ -85,7 +86,6 @@ const Shop = () => {
         setMaxPrice('');
         setSelectedSizes([]);
         setSelectedColors([]);
-        setSelectedBrands([]);
         setSearchParams({});
     };
 
@@ -193,17 +193,6 @@ const Shop = () => {
                                 const params = Object.fromEntries(searchParams);
                                 delete params.color;
                                 setSelectedColors([]);
-                                setSearchParams(params);
-                            }}><X size={12} /></button>
-                        </span>
-                    )}
-                    {currentBrand && (
-                        <span className="flex items-center space-x-2 px-3 py-1 bg-primary/5 rounded-full text-xs font-medium text-primary border border-primary/10">
-                            <span>Brand: {currentBrand}</span>
-                            <button onClick={() => {
-                                const params = Object.fromEntries(searchParams);
-                                delete params.brand;
-                                setSelectedBrands([]);
                                 setSearchParams(params);
                             }}><X size={12} /></button>
                         </span>
@@ -316,34 +305,18 @@ const Shop = () => {
                                     </div>
                                 </div>
 
-                                <div>
-                                    <h4 className="text-sm font-bold uppercase tracking-wider mb-6">Color</h4>
-                                    <div className="flex flex-wrap gap-2">
-                                        {FILTER_COLORS.map(c => (
-                                            <button 
-                                                key={c} 
-                                                onClick={() => setSelectedColors(prev => prev.includes(c) ? prev.filter(x => x !== c) : [...prev, c])}
-                                                className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors border ${selectedColors.includes(c) ? 'bg-primary text-white border-primary' : 'bg-gray-50 text-secondary border-transparent hover:border-gray-200'}`}
-                                            >
-                                                {c}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-
                                 <div className="pb-24">
-                                    <h4 className="text-sm font-bold uppercase tracking-wider mb-6">Brand</h4>
-                                    <div className="space-y-3">
-                                        {FILTER_BRANDS.map(b => (
-                                            <label key={b} className="flex items-center space-x-3 cursor-pointer">
-                                                <input 
-                                                    type="checkbox" 
-                                                    checked={selectedBrands.includes(b)}
-                                                    onChange={() => setSelectedBrands(prev => prev.includes(b) ? prev.filter(x => x !== b) : [...prev, b])}
-                                                    className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary"
+                                    <h4 className="text-sm font-bold uppercase tracking-wider mb-6">Color</h4>
+                                    <div className="flex flex-wrap gap-4">
+                                        {FILTER_COLORS.map(c => (
+                                            <div key={c.name} className="flex flex-col items-center space-y-2">
+                                                <button 
+                                                    onClick={() => setSelectedColors(prev => prev.includes(c.name) ? prev.filter(x => x !== c.name) : [...prev, c.name])}
+                                                    style={{ backgroundColor: c.hex }}
+                                                    className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${selectedColors.includes(c.name) ? 'ring-2 ring-primary ring-offset-2' : 'ring-1 ring-gray-200'} ${c.name === 'White' ? 'border border-gray-200' : ''}`}
                                                 />
-                                                <span className="text-sm font-medium">{b}</span>
-                                            </label>
+                                                <span className="text-[10px] font-medium text-secondary">{c.name}</span>
+                                            </div>
                                         ))}
                                     </div>
                                 </div>

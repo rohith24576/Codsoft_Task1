@@ -172,12 +172,11 @@ export const mockProducts = [
 
 const getAllProducts = asyncHandler(async (req, res) => {
     if (process.env.USE_MOCK_DB === 'true') {
-        const { category, search, sort, minPrice, maxPrice, size, color, brand } = req.query;
+        const { category, search, sort, minPrice, maxPrice, size, color } = req.query;
         let products = [...mockProducts].map(p => ({
             ...p,
             sizes: p.sizes || ['S', 'M', 'L', 'XL'],
-            colors: p.colors || ['Black', 'White', 'Navy'],
-            brand: p.brand || 'Elite'
+            colors: p.colors || ['Black', 'White', 'Navy']
         }));
 
         if (category) {
@@ -209,11 +208,6 @@ const getAllProducts = asyncHandler(async (req, res) => {
             products = products.filter(p => p.colors && p.colors.some(c => colorsArr.includes(c)));
         }
 
-        if (brand) {
-            const brandsArr = brand.split(',');
-            products = products.filter(p => p.brand && brandsArr.includes(p.brand));
-        }
-
         if (sort) {
             const [field, order] = sort.split(":");
             products.sort((a, b) => {
@@ -226,7 +220,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
 
         return res.status(200).json(new ApiResponse(200, { products, total: products.length, page: 1, pages: 1 }, "Mock products fetched"));
     }
-    const { page = 1, limit = 10, search, category, minPrice, maxPrice, sort, size, color, brand } = req.query;
+    const { page = 1, limit = 10, search, category, minPrice, maxPrice, sort, size, color } = req.query;
     const query = {};
     if (search) query.name = { $regex: search, $options: "i" };
     if (category) query.category = category;
@@ -240,9 +234,6 @@ const getAllProducts = asyncHandler(async (req, res) => {
     }
     if (color) {
         query.colors = { $in: color.split(',') };
-    }
-    if (brand) {
-        query.brand = { $in: brand.split(',') };
     }
 
     const sortObj = {};
