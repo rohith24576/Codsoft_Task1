@@ -52,16 +52,44 @@ const Login = () => {
             </div>
 
             {/* Right Side - Form */}
-            <div className="flex-1 flex items-center justify-center p-8 sm:p-12 md:p-16 lg:p-24 relative">
+            <div className="flex-1 flex flex-col relative h-screen overflow-y-auto">
                 {/* Decorative Elements */}
                 <div className="absolute top-0 right-0 w-64 h-64 bg-gray-50 rounded-bl-full -z-10 blur-3xl opacity-50" />
                 
-                <motion.div 
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="w-full max-w-md"
-                >
+                {/* Demo Credentials Top Bar */}
+                <div className="w-full bg-primary/5 border-b border-primary/10 py-5 px-8 flex flex-col z-50">
+                    <div className="flex justify-between items-center mb-4">
+                        <span className="text-xs font-bold uppercase tracking-widest text-primary">Demo Credentials</span>
+                        <span className="text-xs font-medium text-primary/60 bg-white px-3 py-1 rounded-full border border-primary/10">✨ Click any box to auto-fill</span>
+                    </div>
+                    <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
+                        <button 
+                            onClick={() => setFormData({ email: 'admin@gmail.com', password: 'admin1234' })}
+                            className="flex-1 flex flex-col items-start bg-white p-4 rounded-xl border border-primary/20 hover:border-primary hover:bg-primary hover:text-white transition-all text-primary shadow-sm group"
+                        >
+                            <span className="font-bold text-xs uppercase tracking-wider mb-2 opacity-70 group-hover:text-white/90">Admin Access</span>
+                            <span className="font-mono text-[13px] font-medium">Email: admin@gmail.com</span>
+                            <span className="font-mono text-[13px] font-medium mt-1">Pass:  admin1234</span>
+                        </button>
+                        <button 
+                            onClick={() => setFormData({ email: 'test@gmail.com', password: 'test1234' })}
+                            className="flex-1 flex flex-col items-start bg-white p-4 rounded-xl border border-primary/20 hover:border-primary hover:bg-primary hover:text-white transition-all text-primary shadow-sm group"
+                        >
+                            <span className="font-bold text-xs uppercase tracking-wider mb-2 opacity-70 group-hover:text-white/90">Test User Access</span>
+                            <span className="font-mono text-[13px] font-medium">Email: test@gmail.com</span>
+                            <span className="font-mono text-[13px] font-medium mt-1">Pass:  test1234</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div className="flex-1 flex items-center justify-center p-8 sm:p-12 relative">
+                    <motion.div 
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5 }}
+                        className="w-full max-w-md"
+                    >
+
                     <div className="mb-12">
                         <h1 className="text-4xl font-bold text-primary mb-3">Welcome Back.</h1>
                         <p className="text-secondary text-lg">Enter your credentials to access your account.</p>
@@ -115,32 +143,6 @@ const Login = () => {
                         </button>
                     </form>
 
-                    <div className="mt-8 p-6 bg-gray-50 border border-gray-100 rounded-2xl">
-                        <h3 className="text-[10px] font-bold uppercase tracking-[0.1em] text-secondary mb-4 flex items-center justify-center space-x-2">
-                            <span>Demo Credentials</span>
-                        </h3>
-                        <div className="space-y-3">
-                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-xs space-y-2 sm:space-y-0">
-                                <span className="text-secondary font-bold uppercase tracking-wider">Admin</span>
-                                <button 
-                                    onClick={() => setFormData({ email: 'admin@gmail.com', password: 'admin1234' })}
-                                    className="font-mono bg-white px-3 py-2 rounded-lg border border-gray-200 hover:border-primary hover:text-primary transition-colors text-left"
-                                >
-                                    admin@gmail.com / admin1234
-                                </button>
-                            </div>
-                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center text-xs space-y-2 sm:space-y-0">
-                                <span className="text-secondary font-bold uppercase tracking-wider">Test User</span>
-                                <button 
-                                    onClick={() => setFormData({ email: 'test@gmail.com', password: 'test1234' })}
-                                    className="font-mono bg-white px-3 py-2 rounded-lg border border-gray-200 hover:border-primary hover:text-primary transition-colors text-left"
-                                >
-                                    test@gmail.com / test1234
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
                     <div className="mt-10 text-center">
                         <p className="text-secondary text-sm">
                             New to ShopNest Elite?{' '}
@@ -150,6 +152,7 @@ const Login = () => {
                         </p>
                     </div>
                 </motion.div>
+                </div>
             </div>
         </div>
     );
