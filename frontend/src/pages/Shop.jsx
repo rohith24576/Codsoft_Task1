@@ -15,17 +15,27 @@ const Shop = () => {
     // Form States
     const [minPrice, setMinPrice] = useState(searchParams.get('minPrice') || '');
     const [maxPrice, setMaxPrice] = useState(searchParams.get('maxPrice') || '');
+    const [selectedSizes, setSelectedSizes] = useState(searchParams.get('size')?.split(',') || []);
+    const [selectedColors, setSelectedColors] = useState(searchParams.get('color')?.split(',') || []);
+    const [selectedBrands, setSelectedBrands] = useState(searchParams.get('brand')?.split(',') || []);
     
     const search = searchParams.get('search') || '';
     const category = searchParams.get('category') || '';
     const sort = searchParams.get('sort') || 'createdAt:desc';
     const currentMin = searchParams.get('minPrice') || '';
     const currentMax = searchParams.get('maxPrice') || '';
+    const currentSize = searchParams.get('size') || '';
+    const currentColor = searchParams.get('color') || '';
+    const currentBrand = searchParams.get('brand') || '';
+
+    const FILTER_SIZES = ['S', 'M', 'L', 'XL', '7', '8', '9', '10'];
+    const FILTER_COLORS = ['Black', 'White', 'Navy', 'Grey', 'Red', 'Brown'];
+    const FILTER_BRANDS = ['Elite', 'Nike', 'Zara', 'Gucci'];
 
     useEffect(() => {
-        fetchProducts({ search, category, sort, minPrice: currentMin, maxPrice: currentMax });
+        fetchProducts({ search, category, sort, minPrice: currentMin, maxPrice: currentMax, size: currentSize, color: currentColor, brand: currentBrand });
         fetchCategories();
-    }, [search, category, sort, currentMin, currentMax, fetchProducts, fetchCategories]);
+    }, [search, category, sort, currentMin, currentMax, currentSize, currentColor, currentBrand, fetchProducts, fetchCategories]);
 
     const handleSortChange = (value) => {
         setSearchParams({ ...Object.fromEntries(searchParams), sort: value });
@@ -46,6 +56,15 @@ const Shop = () => {
         
         if (maxPrice) params.maxPrice = maxPrice;
         else delete params.maxPrice;
+
+        if (selectedSizes.length > 0) params.size = selectedSizes.join(',');
+        else delete params.size;
+
+        if (selectedColors.length > 0) params.color = selectedColors.join(',');
+        else delete params.color;
+
+        if (selectedBrands.length > 0) params.brand = selectedBrands.join(',');
+        else delete params.brand;
         
         setSearchParams(params);
         setIsFilterOpen(false);
@@ -64,6 +83,9 @@ const Shop = () => {
     const clearFilters = () => {
         setMinPrice('');
         setMaxPrice('');
+        setSelectedSizes([]);
+        setSelectedColors([]);
+        setSelectedBrands([]);
         setSearchParams({});
     };
 
@@ -149,6 +171,39 @@ const Shop = () => {
                                 delete params.maxPrice;
                                 setMinPrice('');
                                 setMaxPrice('');
+                                setSearchParams(params);
+                            }}><X size={12} /></button>
+                        </span>
+                    )}
+                    {currentSize && (
+                        <span className="flex items-center space-x-2 px-3 py-1 bg-primary/5 rounded-full text-xs font-medium text-primary border border-primary/10">
+                            <span>Size: {currentSize}</span>
+                            <button onClick={() => {
+                                const params = Object.fromEntries(searchParams);
+                                delete params.size;
+                                setSelectedSizes([]);
+                                setSearchParams(params);
+                            }}><X size={12} /></button>
+                        </span>
+                    )}
+                    {currentColor && (
+                        <span className="flex items-center space-x-2 px-3 py-1 bg-primary/5 rounded-full text-xs font-medium text-primary border border-primary/10">
+                            <span>Color: {currentColor}</span>
+                            <button onClick={() => {
+                                const params = Object.fromEntries(searchParams);
+                                delete params.color;
+                                setSelectedColors([]);
+                                setSearchParams(params);
+                            }}><X size={12} /></button>
+                        </span>
+                    )}
+                    {currentBrand && (
+                        <span className="flex items-center space-x-2 px-3 py-1 bg-primary/5 rounded-full text-xs font-medium text-primary border border-primary/10">
+                            <span>Brand: {currentBrand}</span>
+                            <button onClick={() => {
+                                const params = Object.fromEntries(searchParams);
+                                delete params.brand;
+                                setSelectedBrands([]);
                                 setSearchParams(params);
                             }}><X size={12} /></button>
                         </span>
@@ -243,6 +298,53 @@ const Shop = () => {
                                                 onChange={(e) => setMaxPrice(e.target.value)}
                                             />
                                         </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h4 className="text-sm font-bold uppercase tracking-wider mb-6">Size</h4>
+                                    <div className="flex flex-wrap gap-2">
+                                        {FILTER_SIZES.map(s => (
+                                            <button 
+                                                key={s} 
+                                                onClick={() => setSelectedSizes(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s])}
+                                                className={`min-w-[2.5rem] px-3 h-10 rounded-xl flex items-center justify-center text-xs font-bold transition-colors border ${selectedSizes.includes(s) ? 'bg-primary text-white border-primary' : 'bg-gray-50 text-secondary border-transparent hover:border-gray-200'}`}
+                                            >
+                                                {s}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h4 className="text-sm font-bold uppercase tracking-wider mb-6">Color</h4>
+                                    <div className="flex flex-wrap gap-2">
+                                        {FILTER_COLORS.map(c => (
+                                            <button 
+                                                key={c} 
+                                                onClick={() => setSelectedColors(prev => prev.includes(c) ? prev.filter(x => x !== c) : [...prev, c])}
+                                                className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors border ${selectedColors.includes(c) ? 'bg-primary text-white border-primary' : 'bg-gray-50 text-secondary border-transparent hover:border-gray-200'}`}
+                                            >
+                                                {c}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="pb-24">
+                                    <h4 className="text-sm font-bold uppercase tracking-wider mb-6">Brand</h4>
+                                    <div className="space-y-3">
+                                        {FILTER_BRANDS.map(b => (
+                                            <label key={b} className="flex items-center space-x-3 cursor-pointer">
+                                                <input 
+                                                    type="checkbox" 
+                                                    checked={selectedBrands.includes(b)}
+                                                    onChange={() => setSelectedBrands(prev => prev.includes(b) ? prev.filter(x => x !== b) : [...prev, b])}
+                                                    className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary"
+                                                />
+                                                <span className="text-sm font-medium">{b}</span>
+                                            </label>
+                                        ))}
                                     </div>
                                 </div>
                             </div>

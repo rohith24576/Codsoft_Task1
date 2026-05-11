@@ -172,8 +172,13 @@ export const mockProducts = [
 
 const getAllProducts = asyncHandler(async (req, res) => {
     if (process.env.USE_MOCK_DB === 'true') {
-        const { category, search, sort, minPrice, maxPrice } = req.query;
-        let products = [...mockProducts];
+        const { category, search, sort, minPrice, maxPrice, size, color, brand } = req.query;
+        let products = [...mockProducts].map(p => ({
+            ...p,
+            sizes: p.sizes || ['S', 'M', 'L', 'XL'],
+            colors: p.colors || ['Black', 'White', 'Navy'],
+            brand: p.brand || 'Elite'
+        }));
 
         if (category) {
             products = products.filter(p => p.category._id === category || p.category.name.toLowerCase() === category.toLowerCase());
@@ -194,6 +199,21 @@ const getAllProducts = asyncHandler(async (req, res) => {
             products = products.filter(p => p.price <= Number(maxPrice));
         }
 
+        if (size) {
+            const sizesArr = size.split(',');
+            products = products.filter(p => p.sizes && p.sizes.some(s => sizesArr.includes(s)));
+        }
+
+        if (color) {
+            const colorsArr = color.split(',');
+            products = products.filter(p => p.colors && p.colors.some(c => colorsArr.includes(c)));
+        }
+
+        if (brand) {
+            const brandsArr = brand.split(',');
+            products = products.filter(p => p.brand && brandsArr.includes(p.brand));
+        }
+
         if (sort) {
             const [field, order] = sort.split(":");
             products.sort((a, b) => {
@@ -206,7 +226,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
 
         return res.status(200).json(new ApiResponse(200, { products, total: products.length, page: 1, pages: 1 }, "Mock products fetched"));
     }
-    const { page = 1, limit = 10, search, category, minPrice, maxPrice, sort } = req.query;
+    const { page = 1, limit = 10, search, category, minPrice, maxPrice, sort, size, color, brand } = req.query;
     const query = {};
     if (search) query.name = { $regex: search, $options: "i" };
     if (category) query.category = category;
@@ -214,6 +234,15 @@ const getAllProducts = asyncHandler(async (req, res) => {
         query.price = {};
         if (minPrice) query.price.$gte = Number(minPrice);
         if (maxPrice) query.price.$lte = Number(maxPrice);
+    }
+    if (size) {
+        query.sizes = { $in: size.split(',') };
+    }
+    if (color) {
+        query.colors = { $in: color.split(',') };
+    }
+    if (brand) {
+        query.brand = { $in: brand.split(',') };
     }
 
     const sortObj = {};

@@ -21,6 +21,9 @@ const productSchema = new Schema(
             type: Number,
             default: 0
         },
+        sizes: [String],
+        colors: [String],
+        brand: String,
         images: [
             {
                 type: String, // cloudinary urls
