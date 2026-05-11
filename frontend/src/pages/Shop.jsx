@@ -16,7 +16,6 @@ const Shop = () => {
     const [minPrice, setMinPrice] = useState(searchParams.get('minPrice') || '');
     const [maxPrice, setMaxPrice] = useState(searchParams.get('maxPrice') || '');
     const [selectedSizes, setSelectedSizes] = useState(searchParams.get('size')?.split(',') || []);
-    const [selectedColors, setSelectedColors] = useState(searchParams.get('color')?.split(',') || []);
     
     const search = searchParams.get('search') || '';
     const category = searchParams.get('category') || '';
@@ -24,22 +23,13 @@ const Shop = () => {
     const currentMin = searchParams.get('minPrice') || '';
     const currentMax = searchParams.get('maxPrice') || '';
     const currentSize = searchParams.get('size') || '';
-    const currentColor = searchParams.get('color') || '';
 
     const FILTER_SIZES = ['S', 'M', 'L', 'XL', '7', '8', '9', '10'];
-    const FILTER_COLORS = [
-        { name: 'Black', hex: '#000000' },
-        { name: 'White', hex: '#FFFFFF' },
-        { name: 'Navy', hex: '#1C2E4A' },
-        { name: 'Grey', hex: '#808080' },
-        { name: 'Red', hex: '#8B0000' },
-        { name: 'Brown', hex: '#654321' }
-    ];
 
     useEffect(() => {
-        fetchProducts({ search, category, sort, minPrice: currentMin, maxPrice: currentMax, size: currentSize, color: currentColor });
+        fetchProducts({ search, category, sort, minPrice: currentMin, maxPrice: currentMax, size: currentSize });
         fetchCategories();
-    }, [search, category, sort, currentMin, currentMax, currentSize, currentColor, fetchProducts, fetchCategories]);
+    }, [search, category, sort, currentMin, currentMax, currentSize, fetchProducts, fetchCategories]);
 
     const handleSortChange = (value) => {
         setSearchParams({ ...Object.fromEntries(searchParams), sort: value });
@@ -63,9 +53,6 @@ const Shop = () => {
 
         if (selectedSizes.length > 0) params.size = selectedSizes.join(',');
         else delete params.size;
-
-        if (selectedColors.length > 0) params.color = selectedColors.join(',');
-        else delete params.color;
         
         setSearchParams(params);
         setIsFilterOpen(false);
@@ -85,7 +72,6 @@ const Shop = () => {
         setMinPrice('');
         setMaxPrice('');
         setSelectedSizes([]);
-        setSelectedColors([]);
         setSearchParams({});
     };
 
@@ -186,17 +172,6 @@ const Shop = () => {
                             }}><X size={12} /></button>
                         </span>
                     )}
-                    {currentColor && (
-                        <span className="flex items-center space-x-2 px-3 py-1 bg-primary/5 rounded-full text-xs font-medium text-primary border border-primary/10">
-                            <span>Color: {currentColor}</span>
-                            <button onClick={() => {
-                                const params = Object.fromEntries(searchParams);
-                                delete params.color;
-                                setSelectedColors([]);
-                                setSearchParams(params);
-                            }}><X size={12} /></button>
-                        </span>
-                    )}
                     <button onClick={clearFilters} className="text-xs font-bold text-gray-400 hover:text-primary transition-colors ml-2">Clear All</button>
                 </div>
             )}
@@ -290,7 +265,7 @@ const Shop = () => {
                                     </div>
                                 </div>
 
-                                <div>
+                                <div className="pb-24">
                                     <h4 className="text-sm font-bold uppercase tracking-wider mb-6">Size</h4>
                                     <div className="flex flex-wrap gap-2">
                                         {FILTER_SIZES.map(s => (
@@ -301,22 +276,6 @@ const Shop = () => {
                                             >
                                                 {s}
                                             </button>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <div className="pb-24">
-                                    <h4 className="text-sm font-bold uppercase tracking-wider mb-6">Color</h4>
-                                    <div className="flex flex-wrap gap-4">
-                                        {FILTER_COLORS.map(c => (
-                                            <div key={c.name} className="flex flex-col items-center space-y-2">
-                                                <button 
-                                                    onClick={() => setSelectedColors(prev => prev.includes(c.name) ? prev.filter(x => x !== c.name) : [...prev, c.name])}
-                                                    style={{ backgroundColor: c.hex }}
-                                                    className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${selectedColors.includes(c.name) ? 'ring-2 ring-primary ring-offset-2' : 'ring-1 ring-gray-200'} ${c.name === 'White' ? 'border border-gray-200' : ''}`}
-                                                />
-                                                <span className="text-[10px] font-medium text-secondary">{c.name}</span>
-                                            </div>
                                         ))}
                                     </div>
                                 </div>
