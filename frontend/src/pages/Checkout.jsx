@@ -15,7 +15,7 @@ const Checkout = () => {
     const [loading, setLoading] = useState(false);
     const [orderSuccess, setOrderSuccess] = useState(false);
     const [lastOrder, setLastOrder] = useState(null);
-    const { subtotal, total } = getCartTotal();
+    const { subtotal, total, isFreeShipping, shippingFee } = getCartTotal();
 
     const [address, setAddress] = useState({
         name: '',
@@ -393,7 +393,11 @@ const Checkout = () => {
                         </div>
                         <div className="flex justify-between text-secondary">
                             <span>Shipping</span>
-                            <span className="text-green-500 font-medium">Free</span>
+                            {isFreeShipping ? (
+                                <span className="text-green-500 font-medium">Free</span>
+                            ) : (
+                                <span className="text-primary font-medium">${shippingFee.toFixed(2)}</span>
+                            )}
                         </div>
                         <div className="flex justify-between text-2xl font-bold text-primary pt-4">
                             <span>Total</span>
