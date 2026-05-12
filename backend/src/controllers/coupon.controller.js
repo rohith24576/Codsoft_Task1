@@ -36,6 +36,26 @@ const validateCoupon = asyncHandler(async (req, res) => {
                 isActive: true
             }, "VIP Coupon validated successfully!"));
         }
+        if (code?.toUpperCase() === 'SAVE300') {
+            return res.status(200).json(new ApiResponse(200, {
+                _id: "mock_coupon_save300",
+                code: "SAVE300",
+                discount: 300,
+                type: 'flat',
+                expiryDate: "2030-01-01",
+                isActive: true
+            }, "Coupon validated successfully!"));
+        }
+        if (code?.toUpperCase() === 'WELCOME10') {
+            return res.status(200).json(new ApiResponse(200, {
+                _id: "mock_coupon_welcome10",
+                code: "WELCOME10",
+                discount: 10,
+                type: 'percentage',
+                expiryDate: "2030-01-01",
+                isActive: true
+            }, "Welcome Coupon validated successfully!"));
+        }
         throw new ApiError(404, "Invalid coupon code (Mock Mode)");
     }
 
