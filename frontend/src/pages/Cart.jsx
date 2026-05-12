@@ -137,23 +137,44 @@ const Cart = () => {
 
                         {/* Coupon Form */}
                         {!coupon ? (
-                            <form onSubmit={handleApplyCoupon} className="relative mb-8">
-                                <Tag className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                                <input 
-                                    type="text" 
-                                    placeholder="Coupon code"
-                                    value={couponCode}
-                                    onChange={(e) => setCouponCode(e.target.value)}
-                                    className="w-full pl-12 pr-24 py-4 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:border-primary transition-colors text-sm"
-                                />
-                                <button 
-                                    type="submit"
-                                    disabled={isValidating || !couponCode}
-                                    className="absolute right-2 top-2 bottom-2 px-4 bg-primary text-white rounded-xl text-xs font-bold hover:bg-opacity-90 disabled:opacity-50"
+                            <div className="mb-8 space-y-3">
+                                <motion.div 
+                                    initial={{ opacity: 0, y: -5 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-4 cursor-pointer hover:shadow-md transition-all"
+                                    onClick={() => setCouponCode('WELCOME10')}
                                 >
-                                    {isValidating ? '...' : 'Apply'}
-                                </button>
-                            </form>
+                                    <div className="flex items-center space-x-3">
+                                        <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                            <span className="text-lg">🎉</span>
+                                        </div>
+                                        <div className="flex-1">
+                                            <p className="text-xs font-bold text-amber-900">Don't leave without your discount!</p>
+                                            <p className="text-[11px] text-amber-700 mt-0.5">
+                                                Use code <span className="font-bold bg-amber-200 px-1.5 py-0.5 rounded text-amber-900">WELCOME10</span> for 10% off
+                                            </p>
+                                        </div>
+                                        <span className="text-[10px] font-bold text-amber-600 uppercase">Tap to apply</span>
+                                    </div>
+                                </motion.div>
+                                <form onSubmit={handleApplyCoupon} className="relative">
+                                    <Tag className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                                    <input 
+                                        type="text" 
+                                        placeholder="Coupon code"
+                                        value={couponCode}
+                                        onChange={(e) => setCouponCode(e.target.value)}
+                                        className="w-full pl-12 pr-24 py-4 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:border-primary transition-colors text-sm"
+                                    />
+                                    <button 
+                                        type="submit"
+                                        disabled={isValidating || !couponCode}
+                                        className="absolute right-2 top-2 bottom-2 px-4 bg-primary text-white rounded-xl text-xs font-bold hover:bg-opacity-90 disabled:opacity-50"
+                                    >
+                                        {isValidating ? '...' : 'Apply'}
+                                    </button>
+                                </form>
+                            </div>
                         ) : (
                             <div className="flex items-center justify-between bg-green-50 border border-green-100 rounded-2xl p-4 mb-8">
                                 <div className="flex items-center space-x-3">
