@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { ShoppingCart, Heart, Search, User, Menu, X, LogOut, CheckCircle, ArrowRight } from 'lucide-react';
+import { ShoppingCart, Heart, Search, User, Menu, X, LogOut, CheckCircle, ArrowRight, RefreshCw } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useCartStore } from '../store/useCartStore';
 import { useChatStore } from '../store/useChatStore';
+import { useCurrencyStore } from '../store/useCurrencyStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 
@@ -17,6 +18,7 @@ const Navbar = () => {
     const { cart, shippingThreshold, getCartTotal } = useCartStore();
     const navigate = useNavigate();
     const location = useLocation();
+    const { currency, toggleCurrency, formatPrice } = useCurrencyStore();
 
     // Close search on route change
     useEffect(() => {
@@ -62,7 +64,7 @@ const Navbar = () => {
                                     <span>🎉 Congratulations! Free Shipping applied.</span>
                                 </span>
                             ) : (
-                                <span>You're only ${ (shippingThreshold - subtotal).toFixed(2) } away from Free Shipping!</span>
+                                <span>You're only { formatPrice(shippingThreshold - subtotal) } away from Free Shipping!</span>
                             )}
                         </p>
                     </div>
@@ -112,6 +114,16 @@ const Navbar = () => {
 
                             {user?.role !== 'ADMIN' && (
                                 <>
+                                    {/* Currency Toggle */}
+                                    <button 
+                                        onClick={toggleCurrency}
+                                        className="flex items-center space-x-1.5 px-3 py-1.5 bg-gray-50 hover:bg-gray-100 border border-gray-100 rounded-full transition-all text-sm font-bold text-primary"
+                                        title={`Switch to ${currency === 'USD' ? 'INR (₹)' : 'USD ($)'}`}
+                                    >
+                                        <RefreshCw size={12} className="text-secondary" />
+                                        <span>{currency === 'USD' ? '$ USD' : '₹ INR'}</span>
+                                    </button>
+
                                     <button onClick={() => setIsSearchOpen(!isSearchOpen)} className="p-2 hover:bg-gray-50 rounded-full transition-colors relative">
                                         <Search size={20} className={isSearchOpen ? "text-primary" : "text-secondary"} />
                                     </button>
@@ -148,7 +160,7 @@ const Navbar = () => {
                                                                     </div>
                                                                     <div className="flex-grow min-w-0">
                                                                         <p className="text-xs font-bold text-primary truncate">{item.name}</p>
-                                                                        <p className="text-[10px] text-secondary font-medium">Qty: {item.qty} • ${item.price}</p>
+                                                                        <p className="text-[10px] text-secondary font-medium">Qty: {item.qty} • {formatPrice(item.price)}</p>
                                                                     </div>
                                                                 </div>
                                                             ))}
@@ -246,7 +258,7 @@ const Navbar = () => {
                                                         </div>
                                                         <div className="ml-4 flex-grow">
                                                             <h4 className="text-sm font-bold text-primary">{product.name}</h4>
-                                                            <p className="text-xs text-secondary font-medium">${product.price}</p>
+                                                            <p className="text-xs text-secondary font-medium">{formatPrice(product.price)}</p>
                                                         </div>
                                                         <ArrowRight size={14} className="text-gray-300 group-hover:text-primary transition-colors" />
                                                     </Link>
