@@ -3,7 +3,7 @@ import { useCartStore } from '../store/useCartStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, CreditCard, ShieldCheck, ArrowLeft, Loader2, CheckCircle, Download, ChevronDown, Smartphone, Wallet, QrCode, Banknote } from 'lucide-react';
+import { MapPin, CreditCard, ShieldCheck, ArrowLeft, Loader2, CheckCircle, Download, ChevronDown, Smartphone, Wallet, QrCode, Banknote, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import { jsPDF } from 'jspdf';
@@ -154,24 +154,77 @@ const Checkout = () => {
 
     if (orderSuccess) {
         return (
-            <div className="max-w-7xl mx-auto px-4 py-32 text-center">
-                <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
-                    <div className="w-20 h-20 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto mb-8">
-                        <CheckCircle size={40} />
-                    </div>
-                    <h1 className="text-4xl font-bold text-primary mb-4">Order Confirmed!</h1>
-                    <p className="text-secondary mb-10">Thank you for your purchase. Your order is being processed.</p>
-                    <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-                        <button onClick={() => navigate('/')} className="btn-primary w-full sm:w-auto">
-                            Back to Home
-                        </button>
-                        <button 
-                            onClick={generateInvoice} 
-                            className="flex items-center justify-center space-x-2 px-8 py-3.5 border-2 border-primary text-primary rounded-full font-bold hover:bg-primary hover:text-white transition-all w-full sm:w-auto"
-                        >
-                            <Download size={18} />
-                            <span>Download Invoice</span>
-                        </button>
+            <div className="min-h-[80vh] flex items-center justify-center px-4 py-20 bg-gray-50/30">
+                <motion.div 
+                    initial={{ scale: 0.95, opacity: 0, y: 20 }} 
+                    animate={{ scale: 1, opacity: 1, y: 0 }}
+                    className="max-w-2xl w-full bg-white rounded-[3.5rem] shadow-premium border border-gray-100 overflow-hidden relative"
+                >
+                    {/* Decorative Background Elements */}
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-green-50 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl opacity-50"></div>
+                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-primary/5 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl opacity-50"></div>
+                    
+                    <div className="relative p-12 md:p-16 text-center">
+                        {/* Success Icon with Pulse Effect */}
+                        <div className="relative mb-10 inline-block">
+                            <motion.div 
+                                animate={{ scale: [1, 1.2, 1] }}
+                                transition={{ duration: 2, repeat: Infinity }}
+                                className="absolute inset-0 bg-green-100 rounded-full blur-xl opacity-50"
+                            ></motion.div>
+                            <div className="relative w-24 h-24 bg-green-500 text-white rounded-full flex items-center justify-center mx-auto shadow-lg shadow-green-200">
+                                <CheckCircle size={48} strokeWidth={2.5} />
+                            </div>
+                        </div>
+
+                        <div className="space-y-4 mb-12">
+                            <h1 className="text-5xl font-bold text-primary tracking-tight">Order Confirmed!</h1>
+                            <p className="text-secondary text-lg max-w-md mx-auto leading-relaxed">
+                                Thank you for your purchase. Your order is being processed.
+                            </p>
+                        </div>
+
+                        {/* Order Summary Card */}
+                        {lastOrder && (
+                            <div className="bg-gray-50 rounded-[2.5rem] p-8 mb-12 border border-gray-100 text-left">
+                                <div className="flex justify-between items-center mb-6">
+                                    <div>
+                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Order Details</p>
+                                        <p className="text-sm font-bold text-primary">#{Math.random().toString(36).substring(7).toUpperCase()}</p>
+                                    </div>
+                                    <div className="text-right">
+                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Total Paid</p>
+                                        <p className="text-sm font-bold text-primary">{formatPrice(lastOrder.totalPrice)}</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center space-x-2 pt-4 border-t border-gray-200">
+                                    <ShieldCheck size={16} className="text-green-500" />
+                                    <p className="text-xs text-secondary font-medium italic">Payment successful and secured via encryption.</p>
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <button 
+                                onClick={() => navigate('/')} 
+                                className="w-full py-5 bg-primary text-white rounded-2xl font-bold hover:bg-gray-800 transition-all shadow-xl active:scale-95"
+                            >
+                                Back to Home
+                            </button>
+                            <button 
+                                onClick={generateInvoice} 
+                                className="w-full flex items-center justify-center space-x-2 py-5 border-2 border-primary text-primary rounded-2xl font-bold hover:bg-primary hover:text-white transition-all shadow-lg active:scale-95"
+                            >
+                                <Download size={20} />
+                                <span>Download Invoice</span>
+                            </button>
+                        </div>
+
+                        <div className="mt-10 flex items-center justify-center space-x-2 text-gray-400">
+                            <Sparkles size={14} className="fill-gray-400" />
+                            <p className="text-[10px] font-bold uppercase tracking-[0.3em]">ShopNest Elite Experience</p>
+                            <Sparkles size={14} className="fill-gray-400" />
+                        </div>
                     </div>
                 </motion.div>
             </div>
