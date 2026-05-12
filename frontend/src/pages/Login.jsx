@@ -68,16 +68,16 @@ const Login = () => {
                             className="flex-1 flex flex-col items-start bg-white p-4 rounded-xl border border-primary/20 hover:border-primary hover:bg-primary hover:text-white transition-all text-primary shadow-sm group"
                         >
                             <span className="font-bold text-xs uppercase tracking-wider mb-2 opacity-70 group-hover:text-white/90">Admin Access</span>
-                            <span className="font-mono text-[13px] font-medium">Email: admin@gmail.com</span>
-                            <span className="font-mono text-[13px] font-medium mt-1">Pass:  admin1234</span>
+                            <span className="text-[13px] font-medium">Email: admin@gmail.com</span>
+                            <span className="text-[13px] font-medium mt-1">Pass:  admin1234</span>
                         </button>
                         <button 
                             onClick={() => setFormData({ email: 'test@gmail.com', password: 'test1234' })}
                             className="flex-1 flex flex-col items-start bg-white p-4 rounded-xl border border-primary/20 hover:border-primary hover:bg-primary hover:text-white transition-all text-primary shadow-sm group"
                         >
                             <span className="font-bold text-xs uppercase tracking-wider mb-2 opacity-70 group-hover:text-white/90">Test User Access</span>
-                            <span className="font-mono text-[13px] font-medium">Email: test@gmail.com</span>
-                            <span className="font-mono text-[13px] font-medium mt-1">Pass:  test1234</span>
+                            <span className="text-[13px] font-medium">Email: test@gmail.com</span>
+                            <span className="text-[13px] font-medium mt-1">Pass:  test1234</span>
                         </button>
                     </div>
                 </div>
