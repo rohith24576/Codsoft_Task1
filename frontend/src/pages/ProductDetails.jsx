@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Skeleton from '../components/Skeleton';
 import ProductCard from '../components/ProductCard';
 import toast from 'react-hot-toast';
+import { useCurrencyStore } from '../store/useCurrencyStore';
 
 const ProductDetails = () => {
     const { id } = useParams();
@@ -20,6 +21,7 @@ const ProductDetails = () => {
     const [activeTab, setActiveTab] = useState('description');
     const [selectedSize, setSelectedSize] = useState('');
     const [isSizeModalOpen, setIsSizeModalOpen] = useState(false);
+    const { formatPrice } = useCurrencyStore();
     
     // Review States
     const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
@@ -245,9 +247,9 @@ const ProductDetails = () => {
 
                     <div className="mb-10 p-8 bg-gray-50 rounded-[2.5rem] border border-gray-100">
                         <div className="flex items-center space-x-4 mb-4">
-                            <span className="text-4xl font-bold text-primary">${product.discountPrice || product.price}</span>
+                            <span className="text-4xl font-bold text-primary">{formatPrice(product.discountPrice || product.price)}</span>
                             {product.discountPrice > 0 && (
-                                <span className="text-xl text-secondary line-through opacity-30 font-medium">${product.price}</span>
+                                <span className="text-xl text-secondary line-through opacity-30 font-medium">{formatPrice(product.price)}</span>
                             )}
                         </div>
                         <div className="flex items-center space-x-2">
@@ -504,7 +506,7 @@ const ProductDetails = () => {
                                         <h4 className="font-bold text-primary mb-6 uppercase text-xs tracking-widest">Delivery Experience</h4>
                                         <ul className="space-y-4 text-sm font-medium">
                                             <li className="flex items-center space-x-3"><CheckCircle2 size={16} className="text-green-500" /><span>Standard Delivery: 3-5 business days (FREE)</span></li>
-                                            <li className="flex items-center space-x-3"><CheckCircle2 size={16} className="text-green-500" /><span>Express Delivery: 1-2 business days ($15.00)</span></li>
+                                            <li className="flex items-center space-x-3"><CheckCircle2 size={16} className="text-green-500" /><span>Express Delivery: 1-2 business days ({formatPrice(15)})</span></li>
                                             <li className="flex items-center space-x-3"><CheckCircle2 size={16} className="text-green-500" /><span>Order processing: Within 24 hours</span></li>
                                         </ul>
                                     </div>

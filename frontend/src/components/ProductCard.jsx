@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ShoppingCart, Heart, Star } from 'lucide-react';
+import { useCurrencyStore } from '../store/useCurrencyStore';
 import { motion } from 'framer-motion';
 import { useCartStore } from '../store/useCartStore';
 import { useWishlistStore } from '../store/useWishlistStore';
@@ -10,6 +11,7 @@ const ProductCard = ({ product }) => {
     const { user } = useAuthStore();
     const { addToCart } = useCartStore();
     const { addToWishlist, isInWishlist } = useWishlistStore();
+    const { formatPrice } = useCurrencyStore();
     const isFavorite = isInWishlist(product._id);
 
     return (
@@ -78,11 +80,11 @@ const ProductCard = ({ product }) => {
 
                 <div className="flex items-center space-x-2">
                     <span className="text-lg font-bold text-primary">
-                        ${product.discountPrice > 0 ? product.discountPrice : product.price}
+                        {formatPrice(product.discountPrice > 0 ? product.discountPrice : product.price)}
                     </span>
                     {product.discountPrice > 0 && (
                         <span className="text-sm text-secondary line-through opacity-50">
-                            ${product.price}
+                            {formatPrice(product.price)}
                         </span>
                     )}
                 </div>

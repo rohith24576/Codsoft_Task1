@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Package, ChevronRight, ArrowLeft, CheckCircle2, Truck, Box, Home, X, MapPin, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useCurrencyStore } from '../store/useCurrencyStore';
 
 const Orders = () => {
     const { user, accessToken } = useAuthStore();
@@ -11,6 +12,7 @@ const Orders = () => {
     const [loading, setLoading] = useState(true);
     const [selectedOrder, setSelectedOrder] = useState(null);
     const navigate = useNavigate();
+    const { formatPrice } = useCurrencyStore();
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -136,7 +138,7 @@ const Orders = () => {
                                         <div className="flex items-center justify-between md:justify-end md:space-x-12">
                                             <div className="text-right">
                                                 <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mb-1">Total Amount</p>
-                                                <p className="text-xl font-bold text-primary">${order.totalPrice.toFixed(2)}</p>
+                                                <p className="text-xl font-bold text-primary">{formatPrice(order.totalPrice)}</p>
                                             </div>
                                             <div className={`px-4 py-2 rounded-full text-[9px] font-bold uppercase tracking-widest ${
                                                 order.status === 'Delivered' ? 'bg-green-100 text-green-600' : 'bg-primary/5 text-primary'
@@ -260,7 +262,7 @@ const Orders = () => {
                                             {selectedOrder.orderItems.map((item, idx) => (
                                                 <div key={idx} className="flex items-center justify-between">
                                                     <span className="text-[11px] font-bold text-primary truncate max-w-[120px]">{item.name}</span>
-                                                    <span className="text-[11px] font-bold text-secondary">${item.price}</span>
+                                                    <span className="text-[11px] font-bold text-secondary">{formatPrice(item.price)}</span>
                                                 </div>
                                             ))}
                                         </div>

@@ -5,6 +5,7 @@ import { Trash2, Plus, Minus, ArrowRight, ShoppingBag, Tag, X, ShieldCheck, Truc
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { useCurrencyStore } from '../store/useCurrencyStore';
 
 const Cart = () => {
     const { cart, removeFromCart, updateQty, coupon, applyCoupon, removeCoupon, getCartTotal } = useCartStore();
@@ -12,6 +13,7 @@ const Cart = () => {
     const [isValidating, setIsValidating] = useState(false);
     const { subtotal, total, isFreeShipping, shippingFee } = getCartTotal();
     const navigate = useNavigate();
+    const { formatPrice } = useCurrencyStore();
 
     const handleApplyCoupon = async (e) => {
         e.preventDefault();
@@ -97,8 +99,8 @@ const Cart = () => {
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <p className="font-bold text-lg">${(item.price * item.qty).toFixed(2)}</p>
-                                    <p className="text-xs text-secondary">${item.price} each</p>
+                                    <p className="font-bold text-lg">{formatPrice(item.price * item.qty)}</p>
+                                    <p className="text-xs text-secondary">{formatPrice(item.price)} each</p>
                                 </div>
                             </motion.div>
                         ))}
@@ -113,25 +115,25 @@ const Cart = () => {
                         <div className="space-y-4 mb-8">
                             <div className="flex justify-between text-secondary">
                                 <span>Subtotal</span>
-                                <span>${subtotal.toFixed(2)}</span>
+                                <span>{formatPrice(subtotal)}</span>
                             </div>
                             <div className="flex justify-between text-secondary">
                                 <span>Shipping</span>
                                 {isFreeShipping ? (
                                     <span className="text-green-500 font-medium">Free</span>
                                 ) : (
-                                    <span className="text-primary font-medium">${shippingFee.toFixed(2)}</span>
+                                    <span className="text-primary font-medium">{formatPrice(shippingFee)}</span>
                                 )}
                             </div>
                             {coupon && (
                                 <div className="flex justify-between text-green-500">
                                     <span>Discount ({coupon.code})</span>
-                                    <span>-${coupon.type === 'flat' ? coupon.discount.toFixed(2) : ((subtotal * coupon.discount) / 100).toFixed(2)}</span>
+                                    <span>-{formatPrice(coupon.type === 'flat' ? coupon.discount : ((subtotal * coupon.discount) / 100))}</span>
                                 </div>
                             )}
                             <div className="pt-4 border-t border-gray-200 flex justify-between text-xl font-bold text-primary">
                                 <span>Total</span>
-                                <span>${total.toFixed(2)}</span>
+                                <span>{formatPrice(total)}</span>
                             </div>
                         </div>
 
@@ -182,7 +184,7 @@ const Cart = () => {
                                     <div>
                                         <p className="text-xs font-bold text-green-800">{coupon.code} Applied</p>
                                         <p className="text-[10px] text-green-600">
-                                            {coupon.type === 'flat' ? `$${coupon.discount}` : `${coupon.discount}%`} discount
+                                            {coupon.type === 'flat' ? formatPrice(coupon.discount) : `${coupon.discount}%`} discount
                                         </p>
                                     </div>
                                 </div>

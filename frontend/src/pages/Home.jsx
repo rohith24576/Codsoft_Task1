@@ -6,10 +6,12 @@ import toast from 'react-hot-toast';
 import { useProductStore } from '../store/useProductStore';
 import ProductCard from '../components/ProductCard';
 import { ProductSkeleton } from '../components/Skeleton';
+import { useCurrencyStore } from '../store/useCurrencyStore';
 
 const Home = () => {
     const { featuredProducts, fetchFeaturedProducts, categories, fetchCategories, loading } = useProductStore();
     const [email, setEmail] = useState('');
+    const { formatPrice } = useCurrencyStore();
 
     const handleSubscribe = (e) => {
         e.preventDefault();
@@ -120,7 +122,7 @@ const Home = () => {
                         </div>
                         <div>
                             <h3 className="text-sm font-bold text-primary mb-1">Free Shipping</h3>
-                            <p className="text-[11px] text-secondary font-medium leading-relaxed">On orders over $150</p>
+                            <p className="text-[11px] text-secondary font-medium leading-relaxed">On orders over {formatPrice(150)}</p>
                         </div>
                     </div>
                     <div className="flex items-start space-x-5 group cursor-default">
@@ -162,7 +164,7 @@ const Home = () => {
                     >
                         <div className="relative z-10">
                             <span className="text-[10px] font-bold tracking-widest uppercase opacity-60 mb-2 block">Tier 01</span>
-                            <h3 className="text-3xl font-bold mb-4">Spend $300+ <br />Get 15% OFF</h3>
+                            <h3 className="text-3xl font-bold mb-4">Spend {formatPrice(300)}+ <br />Get 15% OFF</h3>
                             <p className="text-gray-400 text-sm mb-8 max-w-[200px]">Unlock exclusive savings on your premium essentials.</p>
                             <div className="inline-flex items-center space-x-3 px-6 py-3 bg-white/10 backdrop-blur-md rounded-xl border border-white/10">
                                 <span className="text-xs font-medium opacity-60">Use Code:</span>
@@ -178,7 +180,7 @@ const Home = () => {
                     >
                         <div className="relative z-10">
                             <span className="text-[10px] font-bold tracking-widest uppercase opacity-60 mb-2 block">Tier 02</span>
-                            <h3 className="text-3xl font-bold mb-4">Spend $500+ <br />Get 25% OFF</h3>
+                            <h3 className="text-3xl font-bold mb-4">Spend {formatPrice(500)}+ <br />Get 25% OFF</h3>
                             <p className="text-gray-100/60 text-sm mb-8 max-w-[200px]">The ultimate reward for the modern connoisseur.</p>
                             <div className="inline-flex items-center space-x-3 px-6 py-3 bg-white text-primary rounded-xl">
                                 <span className="text-xs font-medium opacity-60">Use Code:</span>

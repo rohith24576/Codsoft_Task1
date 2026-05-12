@@ -7,12 +7,14 @@ import { MapPin, CreditCard, ShieldCheck, ArrowLeft, Loader2, CheckCircle, Downl
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import { jsPDF } from 'jspdf';
+import { useCurrencyStore } from '../store/useCurrencyStore';
 
 const Checkout = () => {
     const { cart, getCartTotal, clearCart } = useCartStore();
     const { user } = useAuthStore();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const { formatPrice, currency: currentCurrency } = useCurrencyStore();
     const [orderSuccess, setOrderSuccess] = useState(false);
     const [lastOrder, setLastOrder] = useState(null);
     const { subtotal, total, isFreeShipping, shippingFee } = getCartTotal();
@@ -129,8 +131,8 @@ const Checkout = () => {
         lastOrder.orderItems.forEach((item) => {
             doc.text(item.name.substring(0, 30), 25, y);
             doc.text(item.qty.toString(), 122, y);
-            doc.text(`$${item.price}`, 145, y);
-            doc.text(`$${(item.price * item.qty).toFixed(2)}`, 170, y);
+            doc.text(formatPrice(item.price), 145, y);
+            doc.text(formatPrice(item.price * item.qty), 170, y);
             y += 10;
         });
         
@@ -140,7 +142,7 @@ const Checkout = () => {
         // Totals
         doc.setFont("helvetica", "bold");
         doc.text("Grand Total:", 140, y + 20);
-        doc.text(`$${lastOrder.totalPrice.toFixed(2)}`, 170, y + 20);
+        doc.text(formatPrice(lastOrder.totalPrice), 170, y + 20);
         
         // Thank you
         doc.setFontSize(10);
@@ -361,7 +363,7 @@ const Checkout = () => {
                                 <>
                                     <span>Place Order</span>
                                     <span>•</span>
-                                    <span>${total.toFixed(2)}</span>
+                                    <span>{formatPrice(total)}</span>
                                 </>
                             )}
                         </button>
@@ -379,9 +381,9 @@ const Checkout = () => {
                                 </div>
                                 <div className="flex-grow">
                                     <p className="text-sm font-bold text-primary line-clamp-1">{item.name}</p>
-                                    <p className="text-xs text-secondary">{item.qty} x ${item.price}</p>
+                                    <p className="text-xs text-secondary">{item.qty} x {formatPrice(item.price)}</p>
                                 </div>
-                                <p className="text-sm font-bold text-primary">${(item.price * item.qty).toFixed(2)}</p>
+                                <p className="text-sm font-bold text-primary">{formatPrice(item.price * item.qty)}</p>
                             </div>
                         ))}
                     </div>
@@ -389,19 +391,19 @@ const Checkout = () => {
                     <div className="space-y-4 pt-10 border-t border-gray-200">
                         <div className="flex justify-between text-secondary">
                             <span>Subtotal</span>
-                            <span>${subtotal.toFixed(2)}</span>
+                            <span>{formatPrice(subtotal)}</span>
                         </div>
                         <div className="flex justify-between text-secondary">
                             <span>Shipping</span>
                             {isFreeShipping ? (
                                 <span className="text-green-500 font-medium">Free</span>
                             ) : (
-                                <span className="text-primary font-medium">${shippingFee.toFixed(2)}</span>
+                                <span className="text-primary font-medium">{formatPrice(shippingFee)}</span>
                             )}
                         </div>
                         <div className="flex justify-between text-2xl font-bold text-primary pt-4">
                             <span>Total</span>
-                            <span>${total.toFixed(2)}</span>
+                            <span>{formatPrice(total)}</span>
                         </div>
                     </div>
 

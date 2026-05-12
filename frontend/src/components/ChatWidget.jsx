@@ -3,10 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, User, ChevronRight, MessageCircle, Sparkles, Bot, Loader2 } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useChatStore } from '../store/useChatStore';
+import { useCurrencyStore } from '../store/useCurrencyStore';
 
 const ChatWidget = () => {
     const { user } = useAuthStore();
     const { isChatOpen, setIsChatOpen } = useChatStore();
+    const { formatPrice } = useCurrencyStore();
     const [chatMessages, setChatMessages] = useState([]);
     const [userInput, setUserInput] = useState('');
     const [isTyping, setIsTyping] = useState(false);
@@ -21,7 +23,7 @@ const ChatWidget = () => {
         },
         { 
             id: 'q2', text: "What is your return policy?", 
-            answer: "At ShopNest, we offer a hassle-free **30-day return policy** on all items. Products must be in their original condition with tags attached. Sale items can be returned within 14 days for store credit. We cover return shipping costs for defective or incorrect items. For all other returns, a flat ₹99 return shipping fee applies." 
+            answer: `At ShopNest, we offer a hassle-free **30-day return policy** on all items. Products must be in their original condition with tags attached. Sale items can be returned within 14 days for store credit. We cover return shipping costs for defective or incorrect items. For all other returns, a flat ${formatPrice(1.2)} return shipping fee applies.` 
         },
         { 
             id: 'q3', text: "Can I track my order?", 
@@ -29,17 +31,17 @@ const ChatWidget = () => {
         },
         { 
             id: 'q4', text: "Show me trending items", 
-            answer: "🔥 Here are our current trending items:\n\n• **Premium Cotton Tee** – ⭐ 4.8 | ₹45\n• **Velvet Evening Gown** – ⭐ 5.0 | ₹240\n• **Classic Leather Watch** – ⭐ 4.9 | ₹190\n• **Tan Trench Coat** – ⭐ 4.9 | ₹150\n\nHead over to the **Shop** page and filter by 'Featured' to see all our top-rated picks!" 
+            answer: `🔥 Here are our current trending items:\n\n• **Premium Cotton Tee** – ⭐ 4.8 | ${formatPrice(45)}\n• **Velvet Evening Gown** – ⭐ 5.0 | ${formatPrice(240)}\n• **Classic Leather Watch** – ⭐ 4.9 | ${formatPrice(190)}\n• **Tan Trench Coat** – ⭐ 4.9 | ${formatPrice(150)}\n\nHead over to the **Shop** page and filter by 'Featured' to see all our top-rated picks!` 
         },
 
         // 10 new questions
         { 
             id: 'q5', text: "What payment methods do you accept?", 
-            answer: "We accept a wide range of payment methods for your convenience:\n\n💳 **Credit/Debit Cards** – Visa, Mastercard, RuPay\n📱 **UPI** – Google Pay, PhonePe, Paytm\n🏦 **Net Banking** – All major banks supported\n💰 **Cash on Delivery** – Available on orders under ₹5,000\n\nAll transactions are secured with 256-bit SSL encryption." 
+            answer: "We accept a wide range of payment methods for your convenience:\n\n💳 **Credit/Debit Cards** – Visa, Mastercard, RuPay\n📱 **UPI** – Google Pay, PhonePe, Paytm\n🏦 **Net Banking** – All major banks supported\n💰 **Cash on Delivery** – Available on all orders\n\nAll transactions are secured with 256-bit SSL encryption." 
         },
         { 
             id: 'q6', text: "How long does shipping take?", 
-            answer: "Our shipping timelines depend on your location:\n\n🚀 **Metro Cities** – 2-3 business days\n🏙️ **Tier 2 Cities** – 3-5 business days\n🌄 **Remote Areas** – 5-7 business days\n\n**Free shipping** is available on all orders above ₹499! We also offer express delivery (next-day) for select pin codes at an additional charge." 
+            answer: `Our shipping timelines depend on your location:\n\n🚀 **Metro Cities** – 2-3 business days\n🏙️ **Tier 2 Cities** – 3-5 business days\n🌄 **Remote Areas** – 5-7 business days\n\n**Free shipping** is available on all orders above ${formatPrice(150)}! We also offer express delivery (next-day) for select pin codes at an additional charge.` 
         },
         { 
             id: 'q7', text: "Do you have a size guide?", 

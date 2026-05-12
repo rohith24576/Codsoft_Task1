@@ -5,12 +5,14 @@ import ProductCard from '../components/ProductCard';
 import { ProductSkeleton } from '../components/Skeleton';
 import { SlidersHorizontal, ChevronDown, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useCurrencyStore } from '../store/useCurrencyStore';
 
 const Shop = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const { products, fetchProducts, loading, categories, fetchCategories } = useProductStore();
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
+    const { formatPrice } = useCurrencyStore();
     
     // Form States
     const [minPrice, setMinPrice] = useState(searchParams.get('minPrice') || '');
@@ -150,7 +152,7 @@ const Shop = () => {
                     )}
                     {(currentMin || currentMax) && (
                         <span className="flex items-center space-x-2 px-3 py-1 bg-primary/5 rounded-full text-xs font-medium text-primary border border-primary/10">
-                            <span>Price: ${currentMin || 0} - ${currentMax || '∞'}</span>
+                            <span>Price: {formatPrice(currentMin || 0)} - {currentMax ? formatPrice(currentMax) : '∞'}</span>
                             <button onClick={() => {
                                 const params = Object.fromEntries(searchParams);
                                 delete params.minPrice;
