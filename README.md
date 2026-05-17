@@ -11,7 +11,7 @@ Experience the fully deployed ShopNest platform live. Our architecture is global
 | Architecture Layer | Cloud Provider | URL | Purpose & Capabilities |
 | :--- | :--- | :--- | :--- |
 | **🎨 Client Storefront** | **Vercel** | [https://codsoft-task1-lovat.vercel.app/](https://codsoft-task1-lovat.vercel.app/) | Global Edge CDN, instant page loads, and fully responsive luxury UI. |
-| **⚙️ Core API Engine** | **Railway** | [](demoproject.up.railway.app) | High-performance Express backend, automated CI/CD, and zero sleep latency. |
+| **⚙️ Core API Engine** | **Railway** | [demoproject.up.railway.app](demoproject.up.railway.app) | High-performance Express backend, automated CI/CD, and zero sleep latency. |
 | **🗄️ Database Grid** | **MongoDB Atlas** | MongoDB Atlas Cloud Cluster | Fully managed cloud NoSQL database ensuring secure user and order persistence. |
 
 > **💡 Demo Tip:** You can explore the storefront, apply the coupon code `WELCOME10` for an instant 10% discount, and complete a full checkout simulation instantly!
