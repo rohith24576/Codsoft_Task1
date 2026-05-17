@@ -8,6 +8,7 @@ import Shop from './pages/Shop';
 import ProductDetails from './pages/ProductDetails';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Profile from './pages/Profile';
@@ -56,6 +57,7 @@ function AppContent() {
                     <Route path="/product/:id" element={<ProductDetails />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
+                    <Route path="/forgot-password" element={<ForgotPassword />} />
                     <Route path="/cart" element={<Cart />} />
                     <Route path="/categories" element={<Categories />} />
                     <Route path="/wishlist" element={<Wishlist />} />

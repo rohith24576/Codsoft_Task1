@@ -4,6 +4,7 @@ import { X, Send, User, ChevronRight, MessageCircle, Sparkles, Bot, Loader2 } fr
 import { useAuthStore } from '../store/useAuthStore';
 import { useChatStore } from '../store/useChatStore';
 import { useCurrencyStore } from '../store/useCurrencyStore';
+import { useLocation } from 'react-router-dom';
 
 const ChatWidget = () => {
     const { user } = useAuthStore();
@@ -14,6 +15,11 @@ const ChatWidget = () => {
     const [isTyping, setIsTyping] = useState(false);
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const chatEndRef = useRef(null);
+    const location = useLocation();
+
+    if (['/login', '/register'].includes(location.pathname)) {
+        return null;
+    }
 
     const quickQuestions = [
         // Original 4 questions

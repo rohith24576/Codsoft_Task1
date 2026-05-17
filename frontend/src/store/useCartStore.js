@@ -24,7 +24,7 @@ export const useCartStore = create(
                 } else {
                     set({ cart: [...cart, { ...product, qty }] });
                 }
-                toast.success('Added to cart');
+                toast.success(`Added ${qty}x ${product.name || 'item'} to cart`);
             },
 
             removeFromCart: (id) => {

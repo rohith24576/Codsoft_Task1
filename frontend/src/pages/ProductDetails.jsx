@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useProductStore } from '../store/useProductStore';
 import { useCartStore } from '../store/useCartStore';
 import { useAuthStore } from '../store/useAuthStore';
+import { useWishlistStore } from '../store/useWishlistStore';
 import { Star, ShoppingCart, Heart, Truck, ShieldCheck, ArrowLeft, Plus, Minus, Settings, X, Send, CheckCircle2, Search, Clock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Skeleton from '../components/Skeleton';
@@ -15,7 +16,9 @@ const ProductDetails = () => {
     const navigate = useNavigate();
     const { product, fetchProductById, loading, relatedProducts, recentlyViewed } = useProductStore();
     const { user } = useAuthStore();
-    const { addToCart } = useCartStore();
+    const { cart, addToCart } = useCartStore();
+    const { addToWishlist, isInWishlist } = useWishlistStore();
+    const isFavorite = isInWishlist(product?._id);
     const [selectedImage, setSelectedImage] = useState(0);
     const [quantity, setQuantity] = useState(1);
     const [activeTab, setActiveTab] = useState('description');
@@ -128,6 +131,9 @@ const ProductDetails = () => {
     const isShoe = product.category?.name?.toLowerCase().includes('shoe') || product.category?.name?.toLowerCase().includes('footwear') || product.category?.name?.toLowerCase().includes('sneaker');
     const isWomen = product.category?.name?.toLowerCase().includes('women');
     const availableSizes = isShoe ? ['7', '8', '9', '10', '11', '12'] : ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+
+    const cartItem = cart?.find(item => item._id === product?._id);
+    const cartQty = cartItem?.qty || 0;
 
     const tabs = ['description', 'reviews', 'shipping'];
     if (!isAccessory) {
@@ -292,6 +298,18 @@ const ProductDetails = () => {
                                     </div>
                                 </div>
                             )}
+                            {cartQty > 0 && (
+                                <motion.div 
+                                    initial={{ opacity: 0, y: -10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="mb-4 inline-flex items-center space-x-2 px-4 py-2 bg-primary/5 border border-primary/10 rounded-full text-primary shadow-sm"
+                                >
+                                    <ShoppingCart size={14} className="text-primary animate-bounce" />
+                                    <span className="text-xs font-bold uppercase tracking-widest">
+                                        You already have {cartQty} of this item in your bag 🛍️
+                                    </span>
+                                </motion.div>
+                            )}
                             <div className="grid grid-cols-1 md:grid-cols-[auto_1fr_auto] gap-4 mb-10">
                             {/* Quantity Selector */}
                             <div className="flex items-center justify-between bg-gray-50 rounded-2xl px-6 py-4 border border-gray-100 min-w-[150px] w-full md:w-auto">
@@ -323,8 +341,22 @@ const ProductDetails = () => {
                             </button>
 
                             {/* Wishlist Button */}
-                            <button className="p-5 border border-gray-100 rounded-2xl hover:border-primary hover:bg-primary/5 transition-all group flex items-center justify-center w-full md:w-auto">
-                                <Heart size={20} className="text-gray-400 group-hover:text-primary transition-colors" />
+                            <button 
+                                onClick={() => addToWishlist(product)}
+                                className={`p-5 border rounded-2xl transition-all group flex items-center justify-center w-full md:w-auto ${
+                                    isFavorite 
+                                        ? 'border-red-500 bg-red-50/50' 
+                                        : 'border-gray-100 hover:border-primary hover:bg-primary/5'
+                                }`}
+                            >
+                                <Heart 
+                                    size={20} 
+                                    className={`transition-colors ${
+                                        isFavorite 
+                                            ? 'text-red-500 fill-red-500' 
+                                            : 'text-gray-400 group-hover:text-primary'
+                                    }`} 
+                                />
                             </button>
                         </div>
                         </>
