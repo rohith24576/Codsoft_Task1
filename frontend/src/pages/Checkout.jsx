@@ -9,6 +9,8 @@ import axios from 'axios';
 import { jsPDF } from 'jspdf';
 import { useCurrencyStore } from '../store/useCurrencyStore';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+
 const Checkout = () => {
     const { cart, getCartTotal, clearCart } = useCartStore();
     const { user } = useAuthStore();
@@ -77,7 +79,7 @@ const Checkout = () => {
         };
 
         try {
-            await axios.post('http://localhost:5000/api/v1/orders', orderData, {
+            await axios.post(`${API_URL}/orders`, orderData, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setLastOrder(orderData);

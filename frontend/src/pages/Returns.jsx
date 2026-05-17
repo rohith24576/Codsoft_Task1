@@ -7,6 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+
 const Returns = () => {
     const { user, accessToken } = useAuthStore();
     const { openChat } = useChatStore();
@@ -20,7 +22,7 @@ const Returns = () => {
             setLoading(true);
             try {
                 const token = accessToken || localStorage.getItem('accessToken');
-                const response = await axios.get('http://localhost:5000/api/v1/orders/mine', {
+                const response = await axios.get(`${API_URL}/orders/mine`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 

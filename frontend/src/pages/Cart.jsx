@@ -7,6 +7,8 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useCurrencyStore } from '../store/useCurrencyStore';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+
 const Cart = () => {
     const { cart, removeFromCart, updateQty, coupon, applyCoupon, removeCoupon, getCartTotal } = useCartStore();
     const [couponCode, setCouponCode] = useState('');
@@ -20,7 +22,7 @@ const Cart = () => {
         setIsValidating(true);
         try {
             const token = localStorage.getItem('accessToken');
-            const response = await axios.post('http://localhost:5000/api/v1/coupons/validate', 
+            const response = await axios.post(`${API_URL}/coupons/validate`, 
                 { code: couponCode },
                 { headers: { Authorization: `Bearer ${token}` } }
             );

@@ -6,6 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useCurrencyStore } from '../store/useCurrencyStore';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+
 const Orders = () => {
     const { user, accessToken } = useAuthStore();
     const [orders, setOrders] = useState([]);
@@ -19,7 +21,7 @@ const Orders = () => {
             setLoading(true);
             try {
                 const token = accessToken || localStorage.getItem('accessToken');
-                const response = await axios.get('http://localhost:5000/api/v1/orders/mine', {
+                const response = await axios.get(`${API_URL}/orders/mine`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 

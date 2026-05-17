@@ -5,6 +5,8 @@ import { useProductStore } from '../../store/useProductStore';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+
 const Dashboard = () => {
     const navigate = useNavigate();
     const [stats, setStats] = useState({ totalSales: 0, totalOrders: 0, totalProducts: 0, totalUsers: 12 });
@@ -19,13 +21,13 @@ const Dashboard = () => {
             const token = localStorage.getItem('accessToken');
             try {
                 // Fetch stats
-                const statsRes = await axios.get('http://localhost:5000/api/v1/orders/analytics', {
+                const statsRes = await axios.get(`${API_URL}/orders/analytics`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setStats(prev => ({ ...prev, ...statsRes.data.data }));
 
                 // Fetch all orders
-                const ordersRes = await axios.get('http://localhost:5000/api/v1/orders', {
+                const ordersRes = await axios.get(`${API_URL}/orders`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setOrders(ordersRes.data.data);

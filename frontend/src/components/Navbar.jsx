@@ -8,6 +8,8 @@ import { useCurrencyStore } from '../store/useCurrencyStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -38,7 +40,7 @@ const Navbar = () => {
                 return;
             }
             try {
-                const response = await axios.get(`http://localhost:5000/api/v1/products?search=${searchTerm}`);
+                const response = await axios.get(`${API_URL}/products?search=${searchTerm}`);
                 if (response?.data?.data?.products) {
                     setSearchResults(response.data.data.products.slice(0, 5));
                 }
