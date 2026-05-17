@@ -54,7 +54,7 @@ const Navbar = () => {
     }, [searchTerm]);
 
     return (
-        <nav className="sticky top-0 z-50 flex flex-col">
+        <nav className="sticky top-0 z-[100] flex flex-col">
             {/* Free Shipping Progress Bar */}
             {cartCount > 0 && user?.role !== 'ADMIN' && (
                 <div className="bg-gray-50 h-8 flex flex-col relative overflow-hidden group">

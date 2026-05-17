@@ -57,7 +57,7 @@ const Login = () => {
                 <div className="absolute top-0 right-0 w-64 h-64 bg-gray-50 rounded-bl-full -z-10 blur-3xl opacity-50" />
                 
                 {/* Demo Credentials Top Bar */}
-                <div className="w-full bg-primary/5 border-b border-primary/10 py-5 px-8 flex flex-col z-50">
+                <div className="w-full bg-primary/5 border-b border-primary/10 py-5 px-8 flex flex-col z-30">
                     <div className="flex justify-between items-center mb-4">
                         <span className="text-xs font-bold uppercase tracking-widest text-primary">Demo Credentials</span>
                         <span className="text-xs font-medium text-primary/60 bg-white px-3 py-1 rounded-full border border-primary/10">✨ Click any box to auto-fill</span>
