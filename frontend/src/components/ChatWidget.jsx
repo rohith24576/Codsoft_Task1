@@ -17,7 +17,7 @@ const ChatWidget = () => {
     const chatEndRef = useRef(null);
     const location = useLocation();
 
-    if (['/login', '/register'].includes(location.pathname)) {
+    if (['/login', '/register', '/forgot-password'].includes(location.pathname)) {
         return null;
     }
 
