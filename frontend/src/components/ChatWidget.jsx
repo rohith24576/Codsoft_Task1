@@ -55,10 +55,7 @@ const ChatWidget = () => {
             id: 'q9', text: "What categories do you offer?", 
             answer: "ShopNest has a curated collection across three main categories:\n\n👔 **Men** – Premium tees, denim, hoodies, linen shirts, trench coats, wool sweaters & more\n👗 **Women** – Silk dresses, cargo pants, maxi dresses, biker jackets, evening gowns & more\n🎒 **Accessories** – Leather watches, sunglasses, canvas backpacks, wallets, scarves & jewelry\n\nExplore each category from the navigation bar!" 
         },
-        { 
-            id: 'q10', text: "Can I cancel my order?", 
-            answer: "Yes, you can cancel your order **before it has been shipped**. Here's how:\n\n1️⃣ Go to **My Orders** in your profile\n2️⃣ Find the order you want to cancel\n3️⃣ Click **Cancel Order**\n\nOnce cancelled, your refund will be processed within 3-5 business days to your original payment method. If the order has already shipped, you'll need to initiate a return instead." 
-        },
+
         { 
             id: 'q11', text: "Do you offer discounts or coupons?", 
             answer: "We love rewarding our customers! 🎁\n\n🏷️ **First Order** – Use code **WELCOME10** for 10% off\n📧 **Newsletter** – Subscribe to get exclusive deals & early access to sales\n🎂 **Birthday Bonus** – Special discount on your birthday month\n⭐ **Loyalty Rewards** – Earn points on every purchase that can be redeemed later\n\nKeep an eye on our homepage banners for seasonal sales and flash deals!" 

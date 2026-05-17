@@ -38,7 +38,7 @@ const Register = () => {
                                 value={formData.fullName}
                                 onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                                 className="input-field pl-12 py-4"
-                                placeholder="John Doe"
+                                placeholder="Rohith"
                             />
                         </div>
                     </div>
@@ -53,7 +53,7 @@ const Register = () => {
                                 value={formData.username}
                                 onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                                 className="input-field pl-12 py-4"
-                                placeholder="johndoe123"
+                                placeholder="rohith123"
                             />
                         </div>
                     </div>

@@ -163,17 +163,7 @@ const Shop = () => {
                             }}><X size={12} /></button>
                         </span>
                     )}
-                    {currentSize && (
-                        <span className="flex items-center space-x-2 px-3 py-1 bg-primary/5 rounded-full text-xs font-medium text-primary border border-primary/10">
-                            <span>Size: {currentSize}</span>
-                            <button onClick={() => {
-                                const params = Object.fromEntries(searchParams);
-                                delete params.size;
-                                setSelectedSizes([]);
-                                setSearchParams(params);
-                            }}><X size={12} /></button>
-                        </span>
-                    )}
+
                     <button onClick={clearFilters} className="text-xs font-bold text-gray-400 hover:text-primary transition-colors ml-2">Clear All</button>
                 </div>
             )}
@@ -267,20 +257,7 @@ const Shop = () => {
                                     </div>
                                 </div>
 
-                                <div className="pb-24">
-                                    <h4 className="text-sm font-bold uppercase tracking-wider mb-6">Size</h4>
-                                    <div className="flex flex-wrap gap-2">
-                                        {FILTER_SIZES.map(s => (
-                                            <button 
-                                                key={s} 
-                                                onClick={() => setSelectedSizes(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s])}
-                                                className={`min-w-[2.5rem] px-3 h-10 rounded-xl flex items-center justify-center text-xs font-bold transition-colors border ${selectedSizes.includes(s) ? 'bg-primary text-white border-primary' : 'bg-gray-50 text-secondary border-transparent hover:border-gray-200'}`}
-                                            >
-                                                {s}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
+
                             </div>
 
                             <div className="absolute bottom-8 left-8 right-8 space-y-4">
