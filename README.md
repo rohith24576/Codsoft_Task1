@@ -4,6 +4,20 @@ ShopNest is a premium, full-stack e-commerce ecosystem engineered for high-perfo
 
 ---
 
+## 🌐 Live Production Ecosystem
+
+Experience the fully deployed ShopNest platform live. Our architecture is globally distributed across top-tier cloud providers for maximum speed, reliability, and zero cold-start latency.
+
+| Architecture Layer | Cloud Provider | Live Endpoint / Status | Purpose & Capabilities |
+| :--- | :--- | :--- | :--- |
+| **🎨 Client Storefront** | **Vercel** | [🚀 Visit Live Storefront](https://codsoft-task1.vercel.app) | Global Edge CDN, instant page loads, and fully responsive luxury UI. |
+| **⚙️ Core API Engine** | **Railway** | [⚡ Server Active (up.railway.app)](https://codsofttask1-production.up.railway.app) | High-performance Express backend, automated CI/CD, and zero sleep latency. |
+| **🗄️ Database Grid** | **MongoDB Atlas** | `🟢 M0 Cloud Cluster (Active)` | Fully managed cloud NoSQL database ensuring secure user and order persistence. |
+
+> **💡 Demo Tip:** You can explore the storefront, apply the coupon code `WELCOME10` for an instant 10% discount, and complete a full checkout simulation instantly!
+
+---
+
 ## 💎 Project Philosophy
 ShopNest was built with three pillars in mind: **Performance, Elegance, and Resilience.**
 - **Performance**: Optimized React rendering using virtual DOM efficiency and lightweight state management.
