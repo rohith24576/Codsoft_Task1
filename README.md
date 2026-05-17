@@ -8,7 +8,7 @@ ShopNest is a premium, full-stack e-commerce ecosystem engineered for high-perfo
 
 Experience the fully deployed ShopNest platform live. Our architecture is globally distributed across top-tier cloud providers for maximum speed, reliability, and zero cold-start latency.
 
-| Architecture Layer | Cloud Provider | Live Endpoint / Status | Purpose & Capabilities |
+| Architecture Layer | Cloud Provider | URL | Purpose & Capabilities |
 | :--- | :--- | :--- | :--- |
 | **🎨 Client Storefront** | **Vercel** | [https://codsoft-task1-lovat.vercel.app/](https://codsoft-task1-lovat.vercel.app/) | Global Edge CDN, instant page loads, and fully responsive luxury UI. |
 | **⚙️ Core API Engine** | **Railway** | [https://codsofttask1-production.up.railway.app](https://codsofttask1-production.up.railway.app) | High-performance Express backend, automated CI/CD, and zero sleep latency. |
@@ -164,8 +164,8 @@ ShopNest/
 *Lead Architect & Full Stack Developer*
 
 - **GitHub**: [@rohith24576](https://github.com/rohith24576)
-- **Portfolio**: [Coming Soon]
-- **Email**: [your-email@example.com]
+- **Portfolio**: [https://rohith24576.github.io/Rohithportfolio/](https://rohith24576.github.io/Rohithportfolio/)
+- **Email**: [rohithjayanthi06@gmail.com](mailto:rohithjayanthi06@gmail.com)
 
 ---
 🏆 *Developed with passion for the Codsoft Web Development Fellowship.*
